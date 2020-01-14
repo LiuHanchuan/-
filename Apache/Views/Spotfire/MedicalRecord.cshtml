@@ -1,0 +1,227 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewBag.Title - 病案管理</title>
+    @Styles.Render("~/Content/easyui")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/easyui")
+
+    <style type="text/css">
+        .fitem {
+            margin-top: 0px;
+            margin-bottom: 0px;
+            text-align: left;
+            padding-left: 40px;
+        }
+
+            .fitem label {
+                display: inline-block;
+                width: 80px;
+            }
+
+            .fitem input {
+                width: 80px;
+            }
+
+        .black {
+            display: none;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            background: rgba(0,0,0,0.1);
+            top: 0;
+            left: 0;
+        }
+
+        .dialog {
+            display: none;
+            position: fixed;
+            z-index: 3;
+            width: 500px;
+            height: 250px;
+            top: 50%;
+            left: 50%;
+            margin: -150px 0 0 -250px;
+            background: #fff;
+            padding: 15px;
+            border-radius: 5px;
+        }
+
+        .OK-button {
+            font-size: 0.9em;
+            color: #fff;
+            background: deepskyblue;
+            outline: none;
+            border: none;
+            cursor: pointer;
+            padding: 10px 20px;
+            -webkit-appearance: none;
+        }
+
+        .Lib-button {
+            color: #fff;
+            background: deepskyblue;
+            outline: none;
+            border: none;
+            cursor: pointer;
+            padding: 90px 160px;
+            -webkit-appearance: none;
+            font-size: 30px;
+        }
+
+        img {
+            margin: 20px 50px; /*调整图片元素间隔*/
+        }
+    </style>
+</head>
+<script language="javascript"></script>
+
+<body onload="init()">
+    <div id="p" class="easyui-panel" title="病案管理"
+         style="padding:10px;background:#fafafa;"
+         data-options="iconCls:'icon_it_write',collapsible:true,toolbar:'#toolbar'">
+        <div id="libmenu" class="fitem"></div>
+        <div class="black" id="black"></div>
+        <div class="dialog" id="dialogBox" display="none">
+            <span style="display: inline-block;">短信验证</span>
+            <span class="dialog_close" style="display: inline-block;padding-left: 470px;border-bottom: 1px solid #eee; cursor:pointer;">X</span>
+            <h3 class="dialog_title">短信验证</h3>
+            <div class="dialog_content" style="font-size:20px;">该库启用动态密码，我们将向库管理员发送登录申请短信，请向其获取动态密码并输入：</div>
+            <div><input id="iapplicant" name="applicant" type="text" style="height:35px;width:400px;font-size:20px;" placeholder="*验证码有效期为10分钟*"></div>
+            <div style="margin:35px 300px;width:250px;">
+                <input class="OK-button" id="btn1" type="submit" value="发送验证码" onclick="SMS(this)" />
+            </div>
+            <div style="margin:-69.5px 420px;width:200px;">
+                <input class="OK-button" id="btn2" type="submit" value="确认" onclick="verify()" />
+            </div>
+        </div>
+
+        <script>
+            var doc = document;
+            var vercode = "",
+                date = new Date(),
+                time1 = 0,
+                time2 = 0,
+                wait = 60,
+                smsverurl1 = "",
+                smsverurl2 = "",
+                libid = "",
+                username = "",
+                password = "",
+                libcount = "",
+                DialogBox = doc.getElementById('dialogBox'),
+                Back = doc.getElementById('black'),
+                DialogClose = DialogBox.getElementsByClassName('dialog_close')[0];
+
+            function init() {
+                var str = "";
+                $.getJSON("/Spotfire/Init",{ libtype: "病案管理" }, function (result) {
+                    libcount = result.total;
+                    $.each(result.rows, function (i, item) {
+                        str += '<img style="cursor:zoom-in" src="' + item.Icon + '" width="150 px;" height="170 px;"onclick = "';
+                        if (item.SMSFlag == 1) {
+                            str += 'showdlg()"/>';
+                            smsverurl1 = item.Url;
+                            smsverurl2 = item.TrueUrl;
+                            libid = item.LibraryID;
+                        }
+                        else {
+                            str += 'OpenDXP(' + "'" + item.Url + "','" + item.TrueUrl+ "'" + ')"/>';
+                        }
+                    });
+                    doc.getElementById('libmenu').innerHTML = str;
+                });
+            }
+            function showdlg() {
+                DialogBox.style.display = 'block';
+                Back.style.display = 'block';
+            }
+            DialogClose.onclick = function () {
+                DialogBox.style.display = 'none';
+                Back.style.display = 'none';
+            }
+            Back.onclick = function () {
+                DialogBox.style.display = 'none';
+                Back.style.display = 'none';
+            }
+
+            function SMS(o) {
+                vercode = Math.random().toString().slice(-6);
+                time1 = date.getTime();
+                //alert(vercode);
+                $.post('/Spotfire/SMSSend', { ver_code: vercode, libID: libid }, function (result) {
+                    if (result.okMsg) {
+                        $.messager.show({
+                            title: '短信发送成功',
+                            msg: result.okMsg
+                        });
+                        time(o);//按钮倒计时
+                    }
+                    else {
+                        $.messager.show({
+                            title: '短信发送失败',
+                            msg: result.errorMsg
+                        });
+                        time(o);
+                    }
+                }, 'json');
+            }
+
+            function verify() {
+                var inputcode = doc.getElementById("iapplicant").value;
+                time2 = date.getTime();
+                if (time1 != 0 && time2 > time1 + 600000) {
+                    alert("验证码超时");
+                }
+                else {
+                    if (inputcode.trim() == vercode && vercode != "") {
+                        alert("验证成功");
+                        location.reload();
+                        OpenDXP(smsverurl1, smsverurl2);
+                    }
+                    else {
+                        $.messager.show({
+                            title: '失败',
+                            msg: '验证码错误'
+                        });
+                    }
+                }
+            }
+
+            function time(o) {
+                if (wait == 0) {
+                    o.removeAttribute("disabled");
+                    o.value = "发送验证码";
+                    wait = 10;
+                } else {
+                    o.setAttribute("disabled", true);
+                    o.value = "重新发送(" + wait + ")";
+                    wait--;
+                    setTimeout(function () {
+                        time(o)
+                    }, 1000)
+                }
+            }
+            function OpenDXP(url1, url2) {
+                if (sessionStorage.getItem('firstflag') == '1') {
+                    window.open(url1);
+                    sessionStorage.setItem('firstflag', '2');
+                }
+                else
+                {
+                    window.open(url2);
+                }
+            }
+        </script>
+    </div>
+</body>
+</html>

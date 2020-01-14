@@ -1,0 +1,740 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户管理</title>
+
+        @Styles.Render("~/Content/easyui")
+        @Scripts.Render("~/bundles/jquery")
+        @Scripts.Render("~/bundles/easyui")
+        @Scripts.Render("~/bundles/easyuivalidate")
+
+        <script type="text/javascript">
+        
+
+             currentOrg = "";
+             function convert(rows) {
+                 function exists(rows, parentId) {
+                     for (var i = 0; i < rows.length; i++) {
+                         if (rows[i].id == parentId) return true;
+                     }
+                     return false;
+                 }
+
+                 var nodes = [];
+                 // get the top level nodes
+                 for (var i = 0; i < rows.length; i++) {
+                     var row = rows[i];
+                     if (!exists(rows, row.parentId)) {
+                         nodes.push({
+                             id: row.id,
+                             text: row.name
+                         });
+                     }
+                 }
+
+                 var toDo = [];
+                 for (var i = 0; i < nodes.length; i++) {
+                     toDo.push(nodes[i]);
+                 }
+                 while (toDo.length) {
+                     var node = toDo.shift();	// the parent node
+                     // get the children nodes
+                     for (var i = 0; i < rows.length; i++) {
+                         var row = rows[i];
+                         if (row.parentId == node.id) {
+                             var child = { id: row.id, text: row.name };
+                             if (node.children) {
+                                 node.children.push(child);
+                             } else {
+                                 node.children = [child];
+                             }
+                             toDo.push(child);
+                         }
+                     }
+                 }
+                 return nodes;
+             }
+
+             $(function () {
+                 $('#tt').tree({
+                     url: '/Account/orgTree',
+                     loadFilter: function (rows) {
+                         return convert(rows);
+                     },
+                     onClick: function (node) {
+                         currentOrg = node.id
+                         $('#dg').datagrid({
+                             url: "/Account/UserList/?orgid=" + node.id
+                         });
+
+                         $('#dg').datagrid('reload');
+                     },
+                     onLoadSuccess: function () {
+                         var t = $(this);
+                         t.tree("collapseAll");
+                     }
+                 });
+             });
+
+             $(function () {
+                 $('#ct').combotree({
+                     url: '/Account/orgTree',
+                     loadFilter: function (rows) {
+                         return convert(rows);
+                     },
+                     onLoadSuccess: function () {
+                         var t = $(this);
+                         t.tree("collapseAll");
+                     }
+                 });
+             });
+
+
+             $(function () {
+                 $('#ct1').combotree({
+                     url: '/Account/orgTree',
+                     loadFilter: function (rows) {
+                         return convert(rows);
+                     },
+                     onLoadSuccess: function () {
+                         var t = $(this);
+                         t.tree("collapseAll");
+                     }
+                 });
+             });
+
+             $.extend($.fn.validatebox.defaults.rules, {
+                 usernameck: {// 验证用户名
+                     validator: function (value) {
+                         if (/^[a-zA-Z0-9_]{3,14}$/i.test(value)) {
+                             $("#ckuser").linkbutton("enable");
+                         }
+                         else {
+
+                             $("#ckuser").linkbutton("disable");
+                         }
+                         return /^[a-zA-Z0-9_]{3,14}$/i.test(value);
+                     },
+                     message: '用户名不合法（允许4-15字节，允许字母数字下划线）'
+                 }
+
+             })
+       
+
+        </script>
+
+</head>
+
+<body class="easyui-layout">
+
+    <div data-options="region:'west',title:'组织机构',split:true,iconCls:'icon-user'" style="width:180px;"><ul id="tt" data-options="animate:true,lines:true" style="margin-top:20px;margin-left:10px;"></ul></div>
+    <div data-options="region:'center',title:'用户管理'" style="padding:5px;background:#eee;">
+        <div class="easyui-layout" fit="true">
+            <div data-options="region:'north',title:'搜索',split:true,iconCls:'icon-search'" style="height:90px;">
+                <div id="p" class="easyui-panel" style="padding:10px;" border="0">
+                    <label>用户名:</label><input id="un" name="UserName" class="easyui-textbox"><label>           姓名:</label><input id="tn" name="TrueName" class="easyui-textbox">   <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-search'" style="width:80px" onclick="searchuser()">Search</a>
+                </div>
+            </div>
+            <div data-options="region:'center'" style="padding:0px;background:#eee;" border="0">
+                <table id="dg" title="用户操作" class="easyui-datagrid" fitcolumns="true"
+                       url="/Account/UserList"
+                       toolbar="#toolbar" pagination="true"
+                       rownumbers="true" fitcolumns="true" singleselect="true">
+                    <thead>
+                        <tr>
+                            <th field="UserName" width="50">
+                                用户名
+                            </th>
+                            <th field="TrueName" width="50">姓名</th>
+                            <th field="OrgName" width="50">部门</th>
+                            <th field="Job" width="50">职务</th>
+                            <th field="Mobile" width="50">手机号码</th>
+                            <th field="PhoneNumber" width="50">电话号码</th>
+                            <th field="Email" width="50">电子邮箱</th>
+                            <th field="Roles" width="80">拥有角色</th>
+                            @*<th field="Order" width="50">排序</th>*@
+                        </tr>
+                    </thead>
+                </table>
+                <div id="toolbar">
+                    <a href="javascript:void(0)" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="newUser()">创建用户</a>
+                    <a href="javascript:void(0)" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="editUser()" disabled="true" id="bedit">编辑用户</a>
+                    <a href="javascript:void(0)" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="destroyUser()" disabled="true" id="bdel">删除用户</a>
+                    <a href="javascript:void(0)" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="resetPassword()" disabled="true" id="breset">重置密码</a>
+                    <a href="javascript:void(0)" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="ManagerRole()" disabled="true" id="bmg">用户角色管理</a>
+                    <a href="javascript:void(0)" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="ManagerLib()" disabled="true" id="blib">用户库权限管理</a>
+                </div>
+
+
+
+                <div id="dlg" class="easyui-dialog" style="width:480px;height:450px;padding:10px 20px"
+                     closed="true" buttons="#dlg-buttons">
+                    <div class="ftitle">User Information</div>
+                    <form id="fm" method="post" novalidate>
+              
+                        <div class="fitem">
+                            <label>用 户 名:</label>
+                            <input name="UserName" validtype="usernameck" class="easyui-textbox" required="true" style="width:200px;"> <a href="#" class="easyui-linkbutton" id="ckuser" onclick="checkUser()" disabled style="width:40px;height:20px">检测</a>
+                        </div>
+                        <div class="fitem">
+                            <label>密    码:</label>
+                            <input id="pass" name="Password" validtype="password_rule" class="easyui-textbox" required="true" style="width:200px;">
+                        </div>
+                        <div class="fitem">
+                            <label>确认密码:</label>
+                            <input name="ConfirmPassword" validtype="password['#pass']" class="easyui-textbox" required="true" style="width:200px;">
+                        </div>
+                        <div class="fitem">
+                            <label>姓    名:</label>
+                            <input name="TrueName" @*validtype="name"*@ class=" easyui-textbox" required="true" style="width:200px;">
+                        </div>
+                        @*<div class="fitem">
+                            <label>排    序：</label>
+                            <input name="Order" class="easyui-textbox" validtype="integer" required="true" style="width:200px;">
+                        </div>*@
+                        <div class="fitem">
+                            <label>部    门:</label>
+                            <input name="OrganizationID" id="ct" class="easyui-combotree" data-options="url:'/Account/orgTree',method:'get',required:true" style="width:200px;">
+                        </div>
+                        <div class="fitem">
+                            <label>职    务:</label>
+                            <input name="Job" validtype="chinese" class=" easyui-textbox" style="width:200px;">
+                        </div>
+                        <div class="fitem">
+                            <label>邮    箱:</label>
+                            <input name="Email" validtype="email" class=" easyui-textbox" style="width:200px;">
+                        </div>
+                        <div class="fitem">
+                            <label>手机号码:</label>
+                            <input name="Mobile" validtype="mobile" validtype=" mobile" class="easyui-textbox" style="width:200px;">
+                        </div>
+                        <div class="fitem">
+                            <label>电    话:</label>
+                            <input name="PhoneNumber" validtype="phone" class=" easyui-textbox" style="width:200px;">
+                        </div>
+                    </form>
+                </div>
+                <div id="dlg-buttons">
+                    <a href="javascript:void(0)" class="easyui-linkbutton c6" iconcls="icon-ok" onclick="saveUser()" style="width:90px">保存</a>
+                    <a href="javascript:void(0)" class="easyui-linkbutton c6" iconcls="icon-ok" onclick="saveUserContinue()" style="width:90px">连续保存</a>
+                    <a href="javascript:void(0)" class="easyui-linkbutton" iconcls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')" style="width:90px">Cancel</a>
+                </div>
+                <div id="dlgedit" class="easyui-dialog" style="width:450px;height:450px;padding:10px 20px"
+                     closed="true" buttons="#dlg-buttonsedit">
+                    <div class="ftitle">User Information</div>
+                    <form id="fmedit" method="post" novalidate>
+                        <div class="fitem">
+                            <label>姓    名:</label>
+                            <input name="TrueName" validtype="name" class=" easyui-textbox" required="true" style="width:200px;">
+                        </div>
+                        @*<div class="fitem">
+                            <label>排    序：</label>
+                            <input name="Order" class="easyui-textbox" validtype="integer" required="true" style="width:200px;">
+                        </div>*@
+                        <div class="fitem">
+                            <label>部    门:</label>
+                            <input name="OrganizationID" id="ct1" class="easyui-combotree" data-options="url:'/Account/orgTree',method:'get',required:true" style="width:200px;">
+                        </div>
+                        <div class="fitem">
+                            <label>职    务:</label>
+                            <input name="Job" validtype="chinese" class=" easyui-textbox" style="width:200px;">
+                        </div>
+                        <div class="fitem">
+                            <label>邮    箱:</label>
+                            <input name="Email" validtype="email" class=" easyui-textbox" style="width:200px;">
+                        </div>
+                        <div class="fitem">
+                            <label>手机号码:</label>
+                            <input name="Mobile" validtype="mobile" validtype=" mobile" class="easyui-textbox" style="width:200px;">
+                        </div>
+                        <div class="fitem">
+                            <label>电    话:</label>
+                            <input name="PhoneNumber" validtype="phone" class=" easyui-textbox" style="width:200px;">
+                        </div>
+                    </form>
+                </div>
+
+                <div id="dlg-buttonsedit">
+                    <a href="javascript:void(0)" class="easyui-linkbutton c6" iconcls="icon-ok" onclick="saveEditUser()" style="width:90px">Save</a>
+                    <a href="javascript:void(0)" class="easyui-linkbutton" iconcls="icon-cancel" onclick="javascript:$('#dlgedit').dialog('close')" style="width:90px">Cancel</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="dlgrole" class="easyui-dialog" closed="true" buttons="#dlgrole-buttons" modal="true" style="padding:15px 15px">
+        <div class="easyui-layout" style="width:480px;height:460px;padding:0px 0px;border:0px">
+            <div data-options="region:'west'" style="width: 260px; padding: 0px; border: 0px">
+                <div class="easyui-layout" style="width: 260px; height: 460px; border: 0px">
+                    <div class="easyui-panel" title="待选" data-options="region:'center'" style="width: 200px; height: 460px; padding: 6px;">
+                        <select id="lselect" multiple="multiple" name="state" style="width: 185px; height: 410px; border-color: #95B8E7"></select>
+                    </div>
+                    <div data-options="region:'east',border:false" style="width: 60px; padding: 6px; margin: 0px;text-align:bottom; ">
+                        <br /><br /><br /><br /><br /><br /><br /><br /><br />
+                        <a href="javascript:void(0)" id="selto" class="easyui-linkbutton" data-options="iconCls:'icon-large-user',size:'large',iconAlign:'top'">选择</a>
+                        <br /><br />
+                        <a href="javascript:void(0)" id="allsel" class="easyui-linkbutton" data-options="iconCls:'icon-large-users',size:'large',iconAlign:'top'">全选</a>
+                        <br /><br />
+                        <a href="javascript:void(0)" id="del" class="easyui-linkbutton" data-options="iconCls:'icon-large-cancel',size:'large',iconAlign:'top'">删除</a>
+                    </div>
+                </div>
+            </div>
+            <div data-options="region:'east'" style="width: 220px;height:460px; padding: 0px; border: 0px" data-options="border:false">
+                <div class="easyui-panel" title="已选" data-options="region:'east'" style="width:200px;height:460px;padding:6px;">
+                    <select id="rselect" multiple="multiple" name="state1" style="width: 185px; height: 410px; border-color: #95B8E7"></select>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div id="dlgrole-buttons">
+        <a href="javascript:void(0)" class="easyui-linkbutton c6" iconcls="icon-ok" onclick="SaveEdit()" style="width:90px">Save</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" iconcls="icon-cancel" onclick="javascript:$('#dlgrole').dialog('close')" style="width:90px">Cancel</a>
+    </div>
+
+    <script type="text/javascript">
+        var url;
+        var edittype = 0;
+        function newUser() {
+            $('#dlg').dialog('open').dialog('setTitle', 'New User');
+            $('#fm').form('clear');
+            url = '/Account/Register';
+            if (currentOrg != "") {
+                $('#ct').combotree('setValue', currentOrg);
+            }
+            
+        }
+
+
+        function searchuser() {
+                        $('#dg').datagrid({
+                            url: "/Account/UserList/?username=" + $("#un").val() + "&truename=" + $("#tn").val()   //创建成功后grid数据自动跳转到选定的部门
+                        });
+                        $('#dg').datagrid('reload');	// reload the user data
+            
+        }
+
+        function saveUser() {
+            $('#fm').form('submit', {
+                url: '/Account/Register',
+                onSubmit: function () {
+                    return $(this).form('validate');
+                },
+                success: function (result) {
+                    var result = eval('(' + result + ')');
+                    if (result.errorMsg) {
+                        $.messager.show({
+                            title: 'Error',
+                            msg: result.errorMsg
+                        });
+                        $('#dg').datagrid({
+                            url: "/Account/UserList/?orgid=" + $('#ct').combotree("getValue")   //创建失败后grid数据自动跳转到选定的部门
+                        });
+       
+                        $('#dg').datagrid('reload');	// reload the user data
+                    } else {
+                        $.messager.show({
+                            title: '创建成功',
+                            msg: result.okMsg
+                        });
+                        $('#dg').datagrid({
+                            url: "/Account/UserList/?orgid=" + $('#ct').combotree("getValue")   //创建成功后grid数据自动跳转到选定的部门
+                        });
+                        $('#dlg').dialog('close');		// close the dialog
+                        $('#dg').datagrid('reload');	// reload the user data
+                    }
+                }
+            });
+        }
+        function saveUserContinue() {
+            $('#fm').form('submit', {
+                url: '/Account/Register',
+                onSubmit: function () {
+                    return $(this).form('validate');
+                },
+                success: function (result) {
+                    var result = eval('(' + result + ')');
+                    if (result.errorMsg) {
+                        $.messager.show({
+                            title: 'Error',
+                            msg: result.errorMsg
+                        });
+                        $('#dg').datagrid({
+                            url: "/Account/UserList/?orgid=" + $('#ct').combotree("getValue")   //创建失败后grid数据自动跳转到选定的部门
+                        });
+                        $('#dg').datagrid('reload');	// reload the user data
+                    } else {
+                        $.messager.show({
+                            title: '创建成功',
+                            msg: result.okMsg
+                        });
+                        $('#dg').datagrid({
+                            url: "/Account/UserList/?orgid=" + $('#ct').combotree("getValue")
+                        });
+                        //$('#dlg').dialog('close');		// close the dialog
+                        $('#dg').datagrid('reload');	// reload the user data
+                    }
+                }
+            });
+        }
+        function checkUser() {
+            $('#fm').form('submit', {
+                url: '/Account/CheckUserName',
+                onSubmit: function () {
+                   // return $(this).form.UserName('validate');
+                },
+                success: function (result) {
+                    var result = eval('(' + result + ')');
+                    if (result.errorMsg) {
+                        $.messager.show({
+                            title: 'Error',
+                            msg: result.errorMsg
+                        });
+                    } else {
+                        $.messager.show({
+                            title: '提示信息',
+                            msg: result.okMsg
+                        });
+
+                    }
+                }
+            });
+        }
+
+
+        function editUser() {
+            var row = $('#dg').datagrid('getSelected');
+            if (row) {
+                $('#dlgedit').dialog('open').dialog('setTitle', 'Edit User');
+                $('#fmedit').form('load', row);
+                url = '/Account/EditUser/?Id=' + row.ID;
+            }
+        }
+        function saveEditUser() {
+            $('#fmedit').form('submit', {
+                url: url,
+                onSubmit: function () {
+                    return $(this).form('validate');
+                },
+                success: function (result) {
+                    var result = eval('(' + result + ')');
+                    if (result.errorMsg) {
+                        $.messager.show({
+                            title: 'Error',
+                            msg: result.errorMsg
+                        });
+                        $('#dg').datagrid({
+                            url: "/Account/UserList/?orgid=" + $('#ct1').combotree("getValue")   //创建失败后grid数据自动跳转到选定的部门
+                        });
+                        $('#dg').datagrid('reload');
+                    } else {
+                        $.messager.show({
+                            title: '创建成功',
+                            msg: result.okMsg
+                        });
+                        $('#dg').datagrid({
+                            url: "/Account/UserList/?orgid=" + $('#ct1').combotree("getValue")   //创建失败后grid数据自动跳转到选定的部门
+                        });
+                        $('#dlgedit').dialog('close');		// close the dialog
+                        $('#dg').datagrid('reload');	// reload the user data
+
+                    }
+                }
+            });
+        }
+
+        function destroyUser() {
+            var row = $('#dg').datagrid('getSelected');
+            if (row) {
+                $.messager.confirm('Confirm', '确定要删除此用户?', function (r) {
+                    if (r) {
+                        $.post('/Account/DelUser/', { id: row.ID }, function (result) {
+                            if (result.okMsg) {
+                                $.messager.show({	// show error message
+                                    title: '删除成功',
+                                    msg: result.okMsg
+                                });
+                                $('#dg').datagrid('reload');	// reload the user data
+                            } else {
+                                $.messager.show({	// show error message
+                                    title: 'Error',
+                                    msg: result.errorMsg
+                                });
+                            }
+                        }, 'json');
+                    }
+                });
+            }
+        }
+        $(function () {
+            var p = $('#dg').datagrid('getPager');
+
+            $(p).pagination({
+
+                pageSize: 10,//每页显示的记录条数，默认为10
+
+                pageList: [10, 20, 30],//可以设置每页记录条数的列表
+
+                beforePageText: '第',//页数文本框前显示的汉字
+
+                afterPageText: '页    共 {pages} 页',
+
+                displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录',
+
+                /*onBeforeRefresh:function(){
+
+                    $(this).pagination('loading');
+
+                    alert('before refresh');
+
+                    $(this).pagination('loaded');
+
+                }*/
+
+            });
+        });
+
+        function resetPassword() {
+            var row = $('#dg').datagrid('getSelected');
+            if (row) {
+                $.post('/Account/ResetPassword/', { id: row.ID }, function (result) {
+                    if (result.okMsg) {
+                        $.messager.show({	// show error message
+                            title: '重置成功',
+                            msg: result.okMsg
+                        });
+                    } else {
+                        $.messager.show({	// show error message
+                            title: 'Error',
+                            msg: result.errorMsg
+                        });
+                    }
+                }, 'json');
+            }
+        }
+
+        var havevalue;
+        $(function () {
+            //点击按钮移到右边
+            $('#selto').click(function () {
+
+                $("#lselect option:selected").each(function () {
+                    havevalue = 0;
+                    val = $(this).val();
+                    $("#rselect option").each(function () {
+                        if ($(this).val() == val) {
+                            havevalue = 1;
+                            return;
+                        }
+                    });
+                    if (havevalue == 0) {
+
+                        $(this).clone().appendTo('#rselect'); //追加给对方
+                    }
+                });
+            });
+            //移到左边
+
+            //点击按钮全部移到右边
+            $('#allsel').click(function () {
+                $("#lselect option").each(function () {
+                    havevalue = 0;
+                    val = $(this).val();
+                    $("#rselect option").each(function () {
+                        if ($(this).val() == val) {
+                            havevalue = 1;
+                            return;
+                        }
+                    });
+                    if (havevalue == 0) {
+
+                        $(this).clone().appendTo('#rselect'); //追加给对方
+                    }
+                });
+
+                //获取全部的选项,删除并追加给对方
+            });
+
+            //双击移到右边选项
+            $('#lselect').dblclick(function () { //绑定双击事件
+                //获取全部的选项,删除并追加给对方
+                havevalue = 0;
+                val = $("option:selected", this).val();
+                $("#rselect option").each(function () {
+                    if ($(this).val() == val) {
+                        havevalue = 1;
+                        return;
+                    }
+                });
+                if (havevalue == 0) {
+
+                    $("option:selected", this).clone().appendTo('#rselect'); //追加给对方
+                }
+
+            });
+
+            //双击右边自身删除
+            $('#rselect').dblclick(function () { //绑定双击事件
+                //获取全部的选项,删除并追加给对方
+                $("option:selected", this).remove(); //追加给对方
+            });
+
+            $('#del').click(function () { //绑定双击事件
+
+                $("#rselect option:selected").remove();
+            });
+
+        });
+        function ManagerLib() {
+            var row = $('#dg').datagrid('getSelected');
+            $('#dlgrole').dialog('open').dialog('setTitle', '设置用户库权限');
+            $("#lselect").empty();
+            $("#rselect").empty();
+            $.getJSON("/Account/LibList", function (data) {
+                $.each(data.rows, function (i, item) {
+                    $('#lselect').append($("<option/>", {
+                        value: item.ID,
+                        text: item.Name
+                    }));
+                });
+            });
+
+            $.getJSON("/Account/UserLibList?userid=" + row.ID, function (data) {
+                $.each(data.rows, function (i, item) {
+                    $('#rselect').append($("<option/>", {
+                        value: item.ID,
+                        text: item.Name
+                    }));
+                });
+            });
+            edittype = 2;
+        }
+        function UserOfLib() {
+            var select_values = [];
+            var row = $('#dg').datagrid('getSelected');
+            $("#rselect option").each(function () {
+                select_values.push($(this).val())
+
+            });
+            $.post('/Account/UsersOfLib ', { userid: row.ID, Libs: select_values.join() }, function (result) {
+                if (result.okMsg) {
+                    $('#dlgrole').dialog('close')
+                    $.messager.show({	// show error message
+                        title: '用户库权限设置成功',
+                        msg: result.okMsg
+                    });
+                    // reload the user data
+                } else {
+                    $.messager.show({	// show error message
+                        title: '用户库权限设置失败',
+                        msg: result.errorMsg
+                    });
+                }
+
+            }, 'json');
+        }
+        function ManagerRole() {
+            var row = $('#dg').datagrid('getSelected');
+            $('#dlgrole').dialog('open').dialog('setTitle', '设置用户角色');
+            //设置待选角色列表
+            $("#lselect").empty();
+            $("#rselect").empty();
+            $.getJSON("/Account/RoleList?page=1&rows=100", function (data) {
+                $.each(data.rows, function (i, item) {
+                    $('#lselect').append($("<option/>", {
+                        value: item.ID,
+                        text: item.Name
+                    }));
+                });
+            });
+            $.getJSON("/Account/UserRoleList?userid=" + row.ID, function (data) {
+                $.each(data.rows, function (i, item) {
+                    $('#rselect').append($("<option/>", {
+                        value: item.ID,
+                        text: item.Name
+                    }));
+                });
+            });
+            edittype = 1;
+            //设置待选角色列表结束
+        }
+        function UserOfRole() {
+            var select_values = [];
+            var row = $('#dg').datagrid('getSelected');
+            $("#rselect option").each(function () {
+                select_values.push($(this).text())
+
+            });
+            $.post('/Account/UsersOfRole ', { userid: row.ID, roles: select_values.join() }, function (result) {
+                if (result.okMsg) {
+                    $('#dlgrole').dialog('close')
+                    $.messager.show({	// show error message
+                        title: '用户角色设置成功',
+                        msg: result.okMsg
+                    });
+                    // reload the user data
+                } else {
+                    $.messager.show({	// show error message
+                        title: '用户角色设置失败',
+                        msg: result.errorMsg
+                    });
+                }
+
+            }, 'json');
+        }
+        function SaveEdit() {
+            if (edittype == 1) {
+                UserOfRole();
+            }
+            if (edittype == 2) {
+                UserOfLib();
+            }
+        }
+        $('#dg').datagrid({
+            onClickRow: function (node) {
+                $('#bedit').linkbutton("enable");
+                $('#bdel').linkbutton("enable");
+                $('#breset').linkbutton("enable");
+                $('#bmg').linkbutton("enable");
+                $('#blib').linkbutton("enable");
+            }
+        });
+    </script>
+
+    <style type="text/css">
+        #fm {
+            margin: 0;
+            padding: 10px 30px;
+        }
+
+        .ftitle {
+            font-size: 14px;
+            font-weight: bold;
+            padding: 5px 0;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .fitem {
+            margin-bottom: 5px;
+        }
+
+            .fitem label {
+                display: inline-block;
+                width: 100px;
+            }
+
+            .fitem input {
+                width: 160px;
+            }
+    </style>
+</body>
+</html>

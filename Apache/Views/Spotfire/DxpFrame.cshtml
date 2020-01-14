@@ -1,0 +1,47 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewBag.Title - 专病库</title>
+    @Styles.Render("~/Content/easyui")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/easyui")
+</head>
+<style>
+
+    * {
+        padding: 0;
+        margin: 0;
+    }
+
+    html, body {
+        height: 100%;
+        width: 100%;
+        overflow: hidden;
+    }
+
+    iframe {
+        border: 0;
+    }
+</style>
+
+<script language="javascript"></script>
+<body onclick="test()">
+    <script>
+        window.onload = function () {
+            var _iframe = document.getElementById('content').contentWindow;
+            _iframe.document.getElementById('s_btn_wr').disabled = true;
+        }
+    </script>
+    @*<iframe id ="content"src="/Spotfire/Lib" width="100%" height="100%"></iframe>*@
+    <iframe id="content" src="http://baidu.com" width="100%" height="100%"></iframe>
+</body>
+
+</html>

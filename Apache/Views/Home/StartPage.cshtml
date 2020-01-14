@@ -1,0 +1,440 @@
+﻿
+@{
+    Layout = null;
+}
+
+
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>PerkinElmer</title>
+    <style type="text/css">
+        A.top_link:link {
+            FONT-SIZE: 12px;
+            COLOR: #ffffff;
+            TEXT-DECORATION: none;
+        }
+
+        A.top_link:visited {
+            FONT-SIZE: 12px;
+            COLOR: #ffffff;
+            TEXT-DECORATION: none;
+        }
+
+        A.top_link:hover {
+            FONT-SIZE: 12px;
+            COLOR: #ffffff;
+            TEXT-DECORATION: none;
+        }
+
+        #fm {
+            margin: 0;
+            padding: 10px 30px;
+        }
+
+        .ftitle {
+            font-size: 14px;
+            font-weight: bold;
+            padding: 5px 0;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .fitem {
+            margin-bottom: 5px;
+        }
+
+            .fitem label {
+                display: inline-block;
+                width: 100px;
+            }
+
+            .fitem input {
+                width: 160px;
+            }
+    </style>
+    @Styles.Render("~/Content/easyui")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/easyui")
+    @Scripts.Render("~/bundles/easyuivalidate")
+    @Scripts.Render("~/bundles/cookie")
+    @Scripts.Render("~/bundles/changeTheme")
+    @Scripts.Render("~/bundles/highcharts")
+    <script language="javascript">
+        $(function () {
+
+            $('#container').highcharts({
+
+                chart: {
+                    type: 'gauge',
+                    plotBackgroundColor: null,
+                    plotBackgroundImage: null,
+                    plotBorderWidth: 0,
+                    plotShadow: false
+                },
+
+                title: {
+                    text: '未处理完申请',
+                    style: {color:'#ff00',fontSize:'12px'}
+
+                },
+                credits: {
+                    enabled: false
+                },
+                pane: {
+                    startAngle: -150,
+                    endAngle: 150,
+                    background: [{
+                        backgroundColor: {
+                            linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+                            stops: [
+                                [0, '#FFF'],
+                                [1, '#333']
+                            ]
+                        },
+                        borderWidth: 0,
+                        outerRadius: '109%'
+                    }, {
+                        backgroundColor: {
+                            linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+                            stops: [
+                                [0, '#333'],
+                                [1, '#FFF']
+                            ]
+                        },
+                        borderWidth: 1,
+                        outerRadius: '107%'
+                    }, {
+                        // default background
+                    }, {
+                        backgroundColor: '#DDD',
+                        borderWidth: 0,
+                        outerRadius: '105%',
+                        innerRadius: '103%'
+                    }]
+                },
+
+                // the value axis
+                yAxis: {
+                    min: 0,
+                    max: 200,
+
+                    minorTickInterval: 'auto',
+                    minorTickWidth: 1,
+                    minorTickLength: 10,
+                    minorTickPosition: 'inside',
+                    minorTickColor: '#666',
+
+                    tickPixelInterval: 30,
+                    tickWidth: 2,
+                    tickPosition: 'inside',
+                    tickLength: 10,
+                    tickColor: '#666',
+                    labels: {
+                        step: 2,
+                        rotation: 'auto'
+                    },
+                    title: {
+                        text: 'km/h'
+                    },
+                    plotBands: [{
+                        from: 0,
+                        to: 120,
+                        color: '#55BF3B' // green
+                    }, {
+                        from: 120,
+                        to: 160,
+                        color: '#DDDF0D' // yellow
+                    }, {
+                        from: 160,
+                        to: 200,
+                        color: '#DF5353' // red
+                    }]
+                },
+
+                series: [{
+                    name: '共有',
+                    data: [@ViewBag.ItServiceUnCompleted],
+                    tooltip: {
+                        valueSuffix: ' 个申请'
+                    }
+                }]
+
+            });
+
+
+
+
+            $('#container1').highcharts({
+
+                chart: {
+                    type: 'gauge',
+                    plotBackgroundColor: null,
+                    plotBackgroundImage: null,
+                    plotBorderWidth: 0,
+                    plotShadow: false
+                },
+
+                title: {
+                    text: '已处理完申请',
+                    style: { color: '#ff00', fontSize: '12px' }
+
+                },
+                credits: {
+                    enabled: false
+                },
+
+                pane: {
+                    startAngle: -150,
+                    endAngle: 150,
+                    background: [{
+                        backgroundColor: {
+                            linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+                            stops: [
+                                [0, '#FFF'],
+                                [1, '#333']
+                            ]
+                        },
+                        borderWidth: 0,
+                        outerRadius: '109%'
+                    }, {
+                        backgroundColor: {
+                            linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+                            stops: [
+                                [0, '#333'],
+                                [1, '#FFF']
+                            ]
+                        },
+                        borderWidth: 1,
+                        outerRadius: '107%'
+                    }, {
+                        // default background
+                    }, {
+                        backgroundColor: '#DDD',
+                        borderWidth: 0,
+                        outerRadius: '105%',
+                        innerRadius: '103%'
+                    }]
+                },
+
+                // the value axis
+                yAxis: {
+                    min: 0,
+                    max: 200,
+
+                    minorTickInterval: 'auto',
+                    minorTickWidth: 1,
+                    minorTickLength: 10,
+                    minorTickPosition: 'inside',
+                    minorTickColor: '#666',
+
+                    tickPixelInterval: 30,
+                    tickWidth: 2,
+                    tickPosition: 'inside',
+                    tickLength: 10,
+                    tickColor: '#666',
+                    labels: {
+                        step: 2,
+                        rotation: 'auto'
+                    },
+                    title: {
+                        text: 'km/h'
+                    },
+                    plotBands: [{
+                        from: 0,
+                        to: 120,
+                        color: '#55BF3B' // green
+                    }, {
+                        from: 120,
+                        to: 160,
+                        color: '#DDDF0D' // yellow
+                    }, {
+                        from: 160,
+                        to: 200,
+                        color: '#DF5353' // red
+                    }]
+                },
+
+                series: [{
+                    name: '共有',
+                    data: [@ViewBag.ItServiceCompleted],
+                    tooltip: {
+                        valueSuffix: ' 个申请'
+                    }
+                }]
+
+            });
+
+
+
+
+            $('#container2').highcharts({
+
+                chart: {
+                    type: 'gauge',
+                    plotBackgroundColor: null,
+                    plotBackgroundImage: null,
+                    plotBorderWidth: 0,
+                    plotShadow: false
+                },
+
+                title: {
+                    text: '共有申请',
+                    style: { color: '#ff00', fontSize: '12px' }
+
+                },
+                credits: {
+                    enabled: false
+                },
+
+                pane: {
+                    startAngle: -150,
+                    endAngle: 150,
+                    background: [{
+                        backgroundColor: {
+                            linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+                            stops: [
+                                [0, '#FFF'],
+                                [1, '#333']
+                            ]
+                        },
+                        borderWidth: 0,
+                        outerRadius: '109%'
+                    }, {
+                        backgroundColor: {
+                            linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+                            stops: [
+                                [0, '#333'],
+                                [1, '#FFF']
+                            ]
+                        },
+                        borderWidth: 1,
+                        outerRadius: '107%'
+                    }, {
+                        // default background
+                    }, {
+                        backgroundColor: '#DDD',
+                        borderWidth: 0,
+                        outerRadius: '105%',
+                        innerRadius: '103%'
+                    }]
+                },
+
+                // the value axis
+                yAxis: {
+                    min: 0,
+                    max: 200,
+
+                    minorTickInterval: 'auto',
+                    minorTickWidth: 1,
+                    minorTickLength: 10,
+                    minorTickPosition: 'inside',
+                    minorTickColor: '#666',
+
+                    tickPixelInterval: 30,
+                    tickWidth: 2,
+                    tickPosition: 'inside',
+                    tickLength: 10,
+                    tickColor: '#666',
+                    labels: {
+                        step: 2,
+                        rotation: 'auto'
+                    },
+                    title: {
+                        text: 'km/h'
+                    },
+                    plotBands: [{
+                        from: 0,
+                        to: 120,
+                        color: '#55BF3B' // green
+                    }, {
+                        from: 120,
+                        to: 160,
+                        color: '#DDDF0D' // yellow
+                    }, {
+                        from: 160,
+                        to: 200,
+                        color: '#DF5353' // red
+                    }]
+                },
+
+                series: [{
+                    name: '共有',
+                    data: [@ViewBag.ItServiceAll],
+                    tooltip: {
+                        valueSuffix: ' 个申请'
+                    }
+                }]
+
+            });
+
+
+
+        });
+
+    
+    </script>
+    </head>
+    <body>
+        <div id="cc" class="easyui-layout" fit="true">
+            <div data-options="region:'north',split:true,border:false" style="padding:5px;">
+                <div id="cc" class="easyui-layout" fit="true">
+                    <div data-options="region:'center',border:false" style="width: 400px;height:300px">
+                        <table class="easyui-datagrid" id="dg" title="待办事宜" data-options="url: '/Home/StartPageToDoList',singleSelect:true,collapsible:true,method:'get',fit:true,rownumbers:'true',loadMsg:'',method:'post'">
+                            <thead>
+                                <tr>
+                                    <th data-options="field:'WfTitle',width:500,align:'center'">标题</th>
+                                    <th data-options="field:'WfType',width:140,align:'center'">类型</th>
+                                    <th data-options="field:'Wfstatus',width:140,align:'center'">当前状态</th>
+                                    <th data-options="field:'WfCreateDate',width:200,align:'center'">日期</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+            @*<div data-options="region:'center',split:true,border:false" style="padding: 5px;">
+                <div id="p" class="图表" title="My Panel" style="height:350px;padding:10px;background:#fafafa;" data-options="iconCls:'icon-save',closable:true,collapsible:true,maximizable:true">
+                    <div id="container" style="width: 300px;height: 260px; margin: 0 auto;float:left;padding-right:60px;"></div>
+                    <div id="container1" style="width: 300px; height: 260px; margin: 0 auto; float: left; padding-right: 60px;"></div>
+                    <div id="container2" style="width: 300px; height: 260px; margin: 0 auto; float: left;"></div>
+              
+                </div>
+
+            </div>*@
+       
+        </div>
+        <script language="javascript">
+
+            $(document).ready(function () {
+                setInterval("refreshPage()", 5000);
+            });
+            function refreshPage() {        //定时刷新待办列表
+                $('#dg').datagrid('reload');
+            }
+
+
+            $("#dg").datagrid({
+                onClickRow: function (index, row) {
+                    var jq = top.jQuery;
+                    if (jq('#tt').tabs('exists', row.WfTitle)) {
+                        jq('#tt').tabs('select', row.WfTitle);
+                    } else {
+                        var content = '<iframe scrolling="auto" id="'+row.WfCurrentUser+'" frameborder="0"  src="' + row.WfBussinessUrl + '" style="width:100%;height:100%;"></iframe>';
+                        jq('#tt').tabs('add', {
+                            title: row.WfTitle,
+                            content: content,
+                            closable: true,
+                            icon: 'icon_todo',
+                        });
+                    }
+                    
+
+                }
+            })
+       
+        </script>
+    </body>
+
+</html>

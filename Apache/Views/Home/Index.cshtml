@@ -1,0 +1,261 @@
+﻿@model Apache.ViewModels.UserMenuList
+@{
+    Layout = null;
+}
+
+
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="keywords" content="jquery,ui,easy,easyui,web">
+    <meta name="description" content="easyui help you build your web page easily!">
+    <title>Perkinelmer</title>
+    <style type="text/css">
+        A.top_link:link {
+            FONT-SIZE: 12px;
+            COLOR: #ffffff;
+            TEXT-DECORATION: none;
+        }
+
+        A.top_link:visited {
+            FONT-SIZE: 12px;
+            COLOR: #ffffff;
+            TEXT-DECORATION: none;
+        }
+
+        A.top_link:hover {
+            FONT-SIZE: 12px;
+            COLOR: #ffffff;
+            TEXT-DECORATION: none;
+        }
+
+        #fm {
+            margin: 0;
+            padding: 10px 30px;
+        }
+
+        .ftitle {
+            font-size: 14px;
+            font-weight: bold;
+            padding: 5px 0;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .fitem {
+            margin-bottom: 5px;
+        }
+
+            .fitem label {
+                display: inline-block;
+                width: 100px;
+            }
+
+            .fitem input {
+                width: 160px;
+            }
+
+        .menu_h, .menu_v, .menu_h li, .menu_v li {
+            padding: 0;
+            line-height: 21px;
+            font-size: 12px;
+            list-style-type: none;
+            float: left;
+        }
+
+        .menu_h a {
+                display: block;
+                line-height: 21px;
+                padding: 0 10px;
+                text-decoration: none;
+                color: #ffffff;
+            }
+
+        .menu_v a {
+                display: block;
+                line-height: 21px;
+                text-align: center;
+                text-decoration: none;
+            }
+
+        .menu_h li {
+                float: left;
+                position: relative;
+            }
+
+        .menu_v {
+            position: absolute;
+            width: 300px;
+            margin-left: -50px;
+            padding-top: 5px;
+        }
+
+        .menu_v li {
+                float: left;
+                padding: 0;
+                margin: 0;
+            }
+
+        .sub_menu_off .menu_v {
+            display: none;
+        }
+
+        .sub_menu_on .menu_v {
+            display: block;
+        }
+    </style>
+    @Styles.Render("~/Content/easyui")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/easyui")
+    @Scripts.Render("~/bundles/easyuivalidate")
+    @Scripts.Render("~/bundles/cookie")
+    @Scripts.Render("~/bundles/changeTheme")
+    <script language="javascript">
+        function addTab(title, url, icon) {
+            if ($('#tt').tabs('exists', title)) {
+                $('#tt').tabs('select', title);
+            } else {
+                var content = '<iframe scrolling="auto" id="'+icon+'" frameborder="0"  src="' + url + '" style="width:100%;height:100%;"></iframe>';
+                $('#tt').tabs('add', {
+                    title: title,
+                    content: content,
+                    closable: true,
+                    icon: icon,
+                });
+                
+                var oFrm = document.getElementById(icon);
+                oFrm.onload = oFrm.onreadystatechange = function () {
+                    if (this.readyState && this.readyState != 'complete') return;
+                    else {
+                        if ($.cookie('easyuiThemeName')!=null)
+                        changeThemeFun($.cookie('easyuiThemeName'));
+                    }
+                }
+            }
+           
+        }
+   
+
+
+        function changePassword() {
+            $('#dlgchangePassword').dialog('open').dialog('setTitle', '修改密码');
+            $('#fmchangePassword').form('clear');
+            url = '/Home/changePassword/'
+        }
+        function savechangePassword() {
+            $('#fmchangePassword').form('submit', {
+                url: url,
+                onSubmit: function () {
+                    return $(this).form('validate');
+                },
+                success: function (result) {
+                    var result = eval('(' + result + ')');
+                    if (result.errorMsg) {
+                        $.messager.show({
+                            title: 'Error',
+                            msg: result.errorMsg
+                        });
+                    } else {
+                        $.messager.show({
+                            title: '密码修改成功',
+                            msg: result.okMsg
+                        });
+                        $('#dlgchangePassword').dialog('close');		// close the dialog
+                    }
+                }
+            });
+        }
+        $(window).load(function () {
+            addTab("首页", "/Spotfire/Lib", "icon-index");
+            //addTab("待处理审批", "/Home/StartPage", "icon-index");
+        });
+
+            function init() {
+                sessionStorage.setItem('firstflag', '1');
+            }
+    </script>
+
+</head>
+
+<body class="easyui-layout" onload="init()">
+    <div data-options="region:'north',split:true" border="false" style="overflow: hidden; height: 71px; background: #2076C3 url(/images/ui/headbg.png) repeat-x; line-height: 64px; color: #fff; font-family: Verdana, 微软雅黑,黑体">
+        <span style="float: right; padding-right: 20px;" class="head">
+            <ul class="menu_h">
+                <li><h>欢迎 @ViewBag.trueName</h></li>
+                <li onmouseover="this.className='sub_menu_on';" onmouseout="this.className='sub_menu_off';" class="sub_menu_off">
+                    <a href="#">更换主题</a>
+                    <ul class="menu_v">
+                        <li><a href="#" onclick="changeThemeFun('default');"><img src="~/images/ui/theme/default.png" alt="默认" /></a></li>
+                        <li><a href="#" onclick="changeThemeFun('gray');"><img src="~/images/ui/theme/gray.png" alt="灰色" /></a></li>
+                        <li><a href="#" onclick="changeThemeFun('blue');"><img src="~/images/ui/theme/blue.png" alt="蓝色" /></a></li>
+                        <li><a href="#" onclick="changeThemeFun('black');"><img src="~/images/ui/theme/black.png" alt="黑色" /></a></li>
+                        <li><a href="#" onclick="changeThemeFun('ui-sunny');"><img src="~/images/ui/theme/ui-sunny.png" alt="咖啡色" /></a></li>
+                        <li><a href="#" onclick="changeThemeFun('metro-red');"><img src="~/images/ui/theme/metro-red.png" alt="红色" /></a></li>
+                    </ul>
+
+                </li>
+                <li><a href="#" id="editpass" class="top_link" onclick="changePassword()">修改密码</a></li>
+                <li><a href="/Account/LogOff" class="top_link">安全退出</a></li>
+            </ul>
+
+        </span>
+        <span style="background: url(/images/ui/PKILOGO.png) no-repeat left; background-size: 100%; width: 310px; height: 64px; float: left;"></span>
+        <div id="tnav"></div>
+    </div>
+
+    <div data-options="region:'west',title:'菜单导航',split:true" style="width:180px;" iconcls="icon-menu">
+        <div class="easyui-accordion" fit="true" data-options="animate:true">
+            @if (Model.UserMenuPackages != null)
+            {
+                foreach (var catalog in Model.UserMenuPackages)
+                {
+                    <div title="@catalog.menuName" iconcls="@catalog.menuIcon" style="overflow:auto;padding:10px;">
+                        @if (catalog.Menus != null)
+                        {
+                            foreach (var menu in catalog.Menus)
+                            {
+                                <div style="overflow:auto;padding:0px;">
+                                    <a href="#" class="easyui-linkbutton" data-options="plain:true,iconCls:'@menu.menuIcon'" onclick="addTab('@menu.menuName', '/@menu.menuController/@menu.menuAction', '@menu.menuIcon')">@menu.menuName</a>
+                                </div>
+
+                            }
+                        }
+                    </div>
+
+                }
+            }
+        </div>
+    </div>
+    <div data-options="region:'center'@*,title:'工作台'*@" style="padding:5px;background:#eee;" iconcls="icon-work-platform">
+        <div class="easyui-tabs" fit="true" id="tt">
+
+
+        </div>
+    </div>
+
+    <div id="dlgchangePassword" class="easyui-dialog" style="width:380px;height:240px;padding:10px 20px"
+         closed="true" buttons="#dlg-buttonchangePassword">
+        <div class="ftitle">@ViewBag.trueName</div>
+        <form id="fmchangePassword" method="post" novalidate>
+            <div class="fitem">
+                <label>当前密码:</label>
+                <input name="OldPassword" validtype="password_rule" class=" easyui-textbox" type="password" style="width:200px;" required="required">
+            </div>
+            <div class="fitem">
+                <label>新密码:</label>
+                <input id="NewPassword" name="NewPassword" validtype="password_rule" type="password" class=" easyui-textbox" style="width:200px;" required="required">
+            </div>
+            <div class="fitem">
+                <label>确认新密码:</label>
+                <input name="ConfirmPassword" validtype="password['#NewPassword']" type="password" class="easyui-textbox" style="width:200px;" required="required">
+            </div>
+        </form>
+    </div>
+    <div id="dlg-buttonchangePassword">
+        <a href="javascript:void(0)" class="easyui-linkbutton c6" iconcls="icon-ok" onclick="savechangePassword()" style="width:90px">Save</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" iconcls="icon-cancel" onclick="javascript: $('#dlgchangePassword').dialog('close')" style="width:90px">Cancel</a>
+    </div>
+
+</body>
+
+</html>

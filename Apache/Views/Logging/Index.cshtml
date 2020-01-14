@@ -1,0 +1,130 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日志管理</title>
+
+        @Styles.Render("~/Content/easyui")
+        @Scripts.Render("~/bundles/jquery")
+        @Scripts.Render("~/bundles/easyui")
+        @Scripts.Render("~/bundles/easyuivalidate")
+
+
+</head>
+
+<body class="easyui-layout" style="padding:5px;">
+
+    <div data-options="region:'center',title:'日志管理'" style="padding:5px;background:#eee;">
+        <div class="easyui-layout" fit="true">
+            <div data-options="region:'north',title:'搜索',split:true,iconCls:'icon-search'" style="height:90px;">
+                <div id="p" class="easyui-panel" style="padding:10px;" border="0">
+                    <label>用户名:</label><input id="un" name="logUser" class="easyui-textbox"><label>           操作时间:</label>起&nbsp;<input id="tn" name="logTime" class="easyui-textbox easyui-datebox">&nbsp;止&nbsp;<input id="tne" name="logTime" class="easyui-textbox easyui-datebox">   <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-search'" style="width:80px" onclick="searchuser()">Search</a>
+                </div>
+            </div>
+            <div data-options="region:'center'" style="padding:0px;background:#eee;" border="0">
+                <table id="dg" title="日志管理" class="easyui-datagrid" fitcolumns="true"
+                       url="/Logging/LogList"
+                       pagination="true" toolbar="#toolbar"
+                       rownumbers="true" fitcolumns="true" singleselect="true">
+                    <thead>
+                        <tr>
+                            <th field="logUser" width="30">用户名</th>
+                            <th field="logTime" width="40">操作时间</th>
+                            <th field="logUserIp" width="50">ip地址</th>
+                            <th field="logOperateName" width="80">操作</th>
+                            <th field="logPram" width="180">操作参数</th>
+                        </tr>
+                    </thead>
+                </table>
+                <div id="toolbar">
+                    <a href="javascript:void(0)" class="easyui-linkbutton" iconcls="icon-reload" plain="true" onclick="reload()">刷新</a>
+                </div>
+
+
+
+
+
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+
+
+
+        function searchuser() {
+            $('#dg').datagrid({
+                url: "/Logging/LogList?logUser=" + $("#un").val() + "&logTimeB=" + $("#tn").datebox("getValue") + "&logTimeE=" + $("#tne").datebox("getValue")  
+            });
+            $('#dg').datagrid('reload');	// reload the user data
+
+        }
+        function reload() {
+            $('#dg').datagrid('reload');
+        }
+        $(function () {
+            var p = $('#dg').datagrid('getPager');
+
+            $(p).pagination({
+
+                pageSize: 10,//每页显示的记录条数，默认为10
+
+                pageList: [10, 20, 30],//可以设置每页记录条数的列表
+
+                beforePageText: '第',//页数文本框前显示的汉字
+
+                afterPageText: '页    共 {pages} 页',
+
+                displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录',
+
+                /*onBeforeRefresh:function(){
+
+                    $(this).pagination('loading');
+
+                    alert('before refresh');
+
+                    $(this).pagination('loaded');
+
+                }*/
+
+            });
+        });
+
+
+    </script>
+
+    <style type="text/css">
+        #fm {
+            margin: 0;
+            padding: 10px 30px;
+        }
+
+        .ftitle {
+            font-size: 14px;
+            font-weight: bold;
+            padding: 5px 0;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .fitem {
+            margin-bottom: 5px;
+        }
+
+            .fitem label {
+                display: inline-block;
+                width: 100px;
+            }
+
+            .fitem input {
+                width: 160px;
+            }
+    </style>
+</body>
+
+</html>

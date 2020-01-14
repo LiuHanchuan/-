@@ -1,0 +1,180 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - 组织机构管理</title>
+    @Styles.Render("~/Content/easyui")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/easyui")
+
+</head>
+
+<body>
+    <div id="p" class="easyui-panel" title="组织机构"
+         style="padding:10px;background:#fafafa;"
+         data-options="iconCls:'icon-save',closable:true,
+                collapsible:true,minimizable:true,maximizable:true">
+
+        <table id="tg" title="组织机构管理" class="easyui-treegrid" style="width:700px;height:500px" data-options="url: '/Organization/orglist',method: 'post',lines: true,rownumbers: true,idField: 'ID',treeField: 'orgShortName',toolbar:'#toolbar',fitColumns:'true',fit:'true'">
+            <thead>
+                <tr>
+                    <th data-options="field:'orgShortName'" width="220">机构简称</th>
+                    <th data-options="field:'orgName'" width="220">机构全称</th>
+                    <th data-options="field:'orgCode'" width="100">机构代码</th>
+                    <th data-options="field:'orgType'" width="150">机构类型</th>
+                    <th data-options="field:'orgNote'" width="150">备注</th>
+                </tr>
+            </thead>
+        </table>
+        <div id="toolbar">
+            <a href="javascript:void(0)" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="newOrg()" disabled="true" id="badd">新增</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="editOrg()" disabled="true" id="bedit">编辑</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="destroyOrg()" disabled="true" id="bdel">删除</a>
+        </div>
+        <div id="dlg" class="easyui-dialog" style="width:400px;height:280px;padding:10px 20px"
+             closed="true" buttons="#dlg-buttons" modal="true">
+            <div class="ftitle">组织机构信息</div>
+            <form id="fm" method="post" novalidate>
+                <div class="fitem">
+                    <label>机构全称:</label>
+                    <input name="orgName" class="easyui-textbox" required="true">
+                </div>
+                <div class="fitem">
+                    <label>机构简称:</label>
+                    <input name="orgShortName" class="easyui-textbox" required="true">
+                </div>
+                <div class="fitem">
+                    <label>机构代码:</label>
+                    <input name="orgCode" class="easyui-textbox">
+                </div>
+                <div class="fitem">
+                    <label>机构类型:</label>
+                    <input name="orgType" class="easyui-textbox">
+                </div>
+                <div class="fitem">
+                    <label>备注:</label>
+                    <input name="orgNote" class="easyui-textbox">
+                </div>
+            </form>
+        </div>
+        <div id="dlg-buttons">
+            <a href="javascript:void(0)" class="easyui-linkbutton c6" iconcls="icon-ok" onclick="saveOrg()" style="width:90px">Save</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" iconcls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')" style="width:90px">Cancel</a>
+        </div>
+        <script type="text/javascript">
+            var url;
+            function newOrg() {
+                var node = $('#tg').treegrid('getSelected');
+                $('#dlg').dialog('open').dialog('setTitle', '添加组织机构');
+                $('#fm').form('clear');
+                url = '/Organization/CreateOrg/' + node.ID;
+            }
+            function editOrg() {
+                var node = $('#tg').treegrid('getSelected');
+                if (node) {
+                    $('#dlg').dialog('open').dialog('setTitle', '编辑组织机构');
+                    $('#fm').form('load', node);
+                    url = '/Organization/EditOrg/?ID=' + node.ID + "&parentId=" + node._parentId;
+                }
+            }
+            function saveOrg() {
+                $('#fm').form('submit', {
+                    url: url,
+                    onSubmit: function () {
+                        return $(this).form('validate');
+                    },
+                    success: function (result) {
+                        var result = eval('(' + result + ')');
+                        if (result.errorMsg) {
+                            $.messager.show({
+                                title: 'Error',
+                                msg: result.errorMsg
+                            });
+                        } else {
+                            $('#dlg').dialog('close');		// close the dialog
+                            $('#tg').treegrid('reload');	// reload the user data
+                            $.messager.show({
+                                title: '创建成功',
+                                msg: result.okMsg
+                            });
+                        }
+                    }
+                });
+            }
+            function destroyOrg() {
+                var node = $('#tg').treegrid('getSelected');
+                if (node) {
+                    $.messager.confirm('Confirm', '组织机构删除后，所以组织机构下的用户将被删除，确定要删除这个组织机构吗?', function (r) {
+                        if (r) {
+                            $.post('/Organization/DelOrg/ ' + node.ID, { id: node.ID, pid: node._parentId }, function (result) {
+                                if (result.okMsg) {
+                                    $('#tg').treegrid('reload');
+                                    $.messager.show({	// show error message
+                                        title: '删除成功',
+                                        msg: result.okMsg
+                                    });
+                                    // reload the user data
+                                } else {
+                                    $.messager.show({	// show error message
+                                        title: '删除失败',
+                                        msg: result.errorMsg
+                                    });
+                                }
+
+                            }, 'json');
+                        }
+                    });
+                }
+            }
+            $('#tg').treegrid({
+                onClickRow: function (node) {
+                    $('#badd').linkbutton("enable");
+                    $('#bedit').linkbutton("enable");
+                    if ($('#tg').treegrid('isLeaf', node.ID)) {
+                        $('#bdel').linkbutton("enable");
+                    } else { $('#bdel').linkbutton("disable"); }
+                },
+                onLoadSuccess: function () {
+                    var t = $(this);
+                    t.treegrid("collapseAll");
+                }
+            });
+        </script>
+        <style type="text/css">
+            #fm {
+                margin: 0;
+                padding: 10px 30px;
+            }
+
+            .ftitle {
+                font-size: 14px;
+                font-weight: bold;
+                padding: 5px 0;
+                margin-bottom: 10px;
+                border-bottom: 1px solid #ccc;
+            }
+
+            .fitem {
+                margin-bottom: 5px;
+            }
+
+                .fitem label {
+                    display: inline-block;
+                    width: 80px;
+                }
+
+                .fitem input {
+                    width: 160px;
+                }
+        </style>
+
+    </div>
+
+</body>
+</html>

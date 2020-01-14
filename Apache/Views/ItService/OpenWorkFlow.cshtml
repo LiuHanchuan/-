@@ -1,0 +1,386 @@
+﻿@{
+    Layout = null;
+    
+}
+@model Apache.Models.ItServiceItem
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - 流程审批</title>
+    @Styles.Render("~/Content/easyui")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/easyui")
+    @Scripts.Render("~/bundles/cookie")
+    @Scripts.Render("~/bundles/changeTheme")
+
+    <style type="text/css" >
+    #fm {
+        margin: 0;
+        padding: 0px 0px;
+    }
+
+    .ftitle {
+        font-size: 14px;
+        font-weight: bold;
+        padding: 5px 0;
+        margin-bottom: 10px;
+        border-bottom: 1px solid #ccc;
+    }
+
+    .fitem {
+        margin-top: 0px;
+        margin-bottom: 10px;
+        text-align: right;
+        padding-right: 40px;
+    }
+
+        .fitem label {
+            display: inline-block;
+            width: 80px;
+        }
+
+        .fitem input {
+            width: 160px;
+        }
+    <!--
+    table {
+        border-collapse: collapse;
+    }
+
+    tr {
+        margin-left: 10px;
+    }
+
+    td {
+        border: solid 1px #ff0000;
+        padding-left: 10px;
+    }
+    -->
+    </style >
+    <script language="javascript">
+        function convert(rows) {
+            function exists(rows, parentId) {
+                for (var i = 0; i < rows.length; i++) {
+                    if (rows[i].id == parentId) return true;
+                }
+                return false;
+            }
+
+            var nodes = [];
+            // get the top level nodes
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                if (!exists(rows, row.parentId)) {
+                    nodes.push({
+                        id: row.id,
+                        text: row.name
+                    });
+                }
+            }
+
+            var toDo = [];
+            for (var i = 0; i < nodes.length; i++) {
+                toDo.push(nodes[i]);
+            }
+            while (toDo.length) {
+                var node = toDo.shift();	// the parent node
+                // get the children nodes
+                for (var i = 0; i < rows.length; i++) {
+                    var row = rows[i];
+                    if (row.parentId == node.id) {
+                        var child = { id: row.id, text: row.name };
+                        if (node.children) {
+                            node.children.push(child);
+                        } else {
+                            node.children = [child];
+                        }
+                        toDo.push(child);
+                    }
+                }
+            }
+            return nodes;
+        }
+
+        $(function () {
+            $('#ct').combotree({
+                url: '/ItService/orgTree',
+                loadFilter: function (rows) {
+                    return convert(rows);
+                },
+                onLoadSuccess: function () {
+                        var t = $(this);
+                        t.tree("collapseAll");
+                    }
+            });
+        });
+
+
+        $(function () {
+            var isitype = $('#isitype').combobox({                         //一级
+                url: '/ItService/getIsitype',
+                editable: false,
+                valueField: 'id',
+                textField: 'name',
+                onSelect: function (record) {
+
+                    sub_isitype.combobox({
+                        editable: false,
+                        url: '/ItService/getSub_isitype?id=' + record.id,
+                        valueField: 'id',
+                        textField: 'name'
+                    }).combobox('clear');
+
+                    end_isiype.combobox({       //清除终极类别
+                        url: '/ItService/getEnd_isitype?id=-1',
+                        editable: false
+                    }).combobox('clear');
+
+                }
+            });
+
+            var sub_isitype = $('#sub_isitype').combobox({               //二级
+                url: '/ItService/getSub_isitype?id=' + isitype.val(),
+                editable: false,
+                valueField: 'id',
+                textField: 'name',
+                onSelect: function (record) {
+                    end_isiype.combobox({
+                        editable: false,
+                        url: '/ItService/getEnd_isitype?id=' + record.id,
+                        valueField: 'id',
+                        textField: 'name'
+                    }).combobox('clear');
+                }
+            });
+
+            var end_isiype = $('#end_isitype').combobox({               //三级
+                url: '/ItService/getEnd_isitype?id=' + sub_isitype.val(),
+                editable: false,
+                valueField: 'id',
+                textField: 'name'
+            });
+
+        });
+        $(function(){
+            $('#lib').combobox({
+            url: '/ItService/getLib',
+            editable: false,
+            valueField: 'LibraryID',
+            textField: 'LibraryName',
+            });
+        });
+        function init() {
+            if (@Model.isitype == 4) {
+                document.getElementById('lab_des').innerHTML = "数据路径:";
+                var des = '';
+                des = document.getElementById('idescription').value;
+                var linkurl = des.split("http://");
+                var str = "";
+                for (j = 0, len = linkurl.length; j < len; j++) {
+                    if (linkurl[j].length > 1) {
+                        str += '<u style="cursor:pointer" onclick = "window.open(' + "'http://" + linkurl[j] + "'" + ')">http://' + linkurl[j] + '</u><br>';
+                    }
+                }
+                document.getElementById('test').innerHTML = str;
+            }
+            else {
+                document.getElementById('lab_des').innerHTML = "申请描述:";
+            }
+        }
+    </script>
+</head>
+
+<body onload="init()">
+    <form id="fm" method="post" novalidate>
+        <div id="p" class="easyui-panel" title="申请单审批"
+             style="padding:10px;background:#fafafa;"
+             data-options="iconCls:'icon_it_write',collapsible:true,toolbar:'#toolbar'">
+            <div class="fitem">
+                <a href="#" class="easyui-linkbutton" iconcls="icon-ok" style="width:100px;height:23px" onclick="OpenPath()">处理</a> <a href="#" class="easyui-linkbutton" iconcls="icon-ok" style="width:100px;height:23px" onclick="$('#dlg_WorkFlowInfo').dialog('open').dialog('setTitle', '@Model.Title');">流转信息</a>
+            </div>
+
+            <table width="100%" align="center">
+                <tr>
+                    <td height="35"><label>标题:</label></td>
+                    <td><input id="iTitle" name="Title" class="easyui-textbox" required="true" style="width:400px" value="@Model.Title"></td>
+
+                </tr>
+                <tr>
+                    <td height="35"><label>申请人:</label></td>
+                    <td><input id="iapplicant" name="applicant" class="easyui-textbox" required="true" style="width:400px" value="@Model.applicant"></td>
+
+                </tr>
+                <tr>
+                    <td height="35"><label>申请部门:</label></td>
+                    <td><input name="applicant_dept" id="ct" class="easyui-combotree" data-options="url:'/ItService/orgTree',method:'get',required:true" style="width:300px;" value="@Model.applicant_dept"></td>
+
+                </tr>
+                @*<tr>
+            <td height="35"><label>联系电话:</label></td>
+            <td><input id="iapplicantPhone" name="applicantPhone" class="easyui-textbox" required="true" style="width:400px" value="@Model.applicantPhone"></td>
+
+        </tr>*@
+                <tr>
+                    <td height="35"><label>类型:</label></td>
+                    <td>
+                        <input class="easyui-combobox" id="isitype" name="isitype" style="width:166px" data-options="valueField:'id', textField:'name', panelHeight:'auto'" value="@Model.isitype">
+                        @*大类(用户选择)：<input class="easyui-combobox" id="isitype" name="isitype" style="width:166px" data-options="valueField:'id', textField:'name', panelHeight:'auto'" required="true">
+                &nbsp;&nbsp;小类(用户选择)：<input class=" easyui-combobox" id="sub_isitype" name="sub_isitype" style="width:166px" data-options="valueField:'id', textField:'name', panelHeight:'auto'" required="true">
+                &nbsp;&nbsp;详细类别(选填项目：用户或者服务人员选择)：<input class=" easyui-combobox" id="end_isitype" name="end_isitype" style="width:166px" data-options="valueField:'id', textField:'name', panelHeight:'auto'">*@
+                    </td>
+
+                </tr>
+                <tr>
+                    <td height="35"><label>专病库:</label></td>
+                    <td><input name="libraries" id="lib" class="easyui-combobox" data-options="valueField:'LibraryID', textField:'LibraryName', panelHeight:'auto'" style="width:166px" value="@Model.LibraryID" readonly="true"></td>
+
+                </tr>
+                <tr>
+                    <td height="35"><label>研究课题:</label></td>
+                    <td><input id="itopic" name="Topic" class="easyui-textbox" data-options="multiline:true" style="height:25px;width:600px" value="@Model.Topic"></td>
+                </tr>
+                <tr>
+                    <td height="100"><label>研究目的:</label></td>
+                    <td><input id="ipurpose" name="Purpose" class="easyui-textbox" data-options="multiline:true" style="height:80px;width:600px" value="@Model.Purpose"></td>
+                </tr>
+                <tr>
+                    <td height="100"><label>研究对象:</label></td>
+                    <td><input id="iobject" name="Object" class="easyui-textbox" data-options="multiline:true" style="height:80px;width:600px" value="@Model.Object"></td>
+                </tr>
+                <tr>
+                    <td height="100"><label id="lab_des">申请描述:</label></td>
+                    <td id="test"><input id="idescription" name="description" class="easyui-textbox" data-options="multiline:true" style="height:80px;width:600px" value="@Model.description"></td>
+                </tr>
+                @*<tr>
+                    <td height="100"><label>处理方法:</label></td>
+                    <td><input id="isolution" name="solution" class="easyui-textbox" data-options="multiline:true" style="height:80px;width:600px" value="@Model.solution"></td>
+
+                </tr>*@
+                <tr>
+                    <td height="35"><label>第一审批人意见:</label></td>
+                    <td>@Html.Raw(@Model.FirstExamine)</td>
+
+                </tr>
+                <tr>
+                    <td height="35"><label>第二审批人意见:</label></td>
+                    <td>@Html.Raw(@Model.SecondExamine)</td>
+
+                </tr>
+                <tr>
+                    <td height="35"><label>库管理员/科室最终意见:</label></td>
+                    <td>@Html.Raw(@Model.LastExamine)</td>
+
+                </tr>
+                @*<tr>
+            <td height="50"><label>项目管理人意见:</label></td>
+            <td>@Html.Raw(@Model.ItManagerOpinion)</td>
+
+        </tr>
+        <tr>
+            <td height="50"><label>库管理员/科室最终意见:</label></td>
+            <td>@Html.Raw(@Model.ProcessingDepartmentOpinion)</td>
+        </tr>
+        <tr>
+            <td height="50"><label>处理人意见:</label></td>
+            <td>@Html.Raw(@Model.DealwithpeopleOpinion)</td>
+        </tr>*@
+            </table>
+            <input id="isi_id" name="ID" type="hidden" value="@Model.ID">
+
+
+        </div>
+        @if (@ViewBag.WfWriteField != "") { 
+        <div style="margin-top:10px">
+            <div id="p" class="easyui-panel" title="审批意见" style="padding:10px;background:#fafafa;" data-options="iconCls:'icon_it_write',collapsible:true,toolbar:'#toolbar'">
+                <input id="iOpinion" name="Opinion" class="easyui-textbox" data-options="multiline:true" style="height:80px;width:700px">
+            </div>
+        </div>
+        }
+    </form>
+    <div id="dlg-path" class="easyui-dialog" closed="true" buttons="#dlg-path-buttons" modal="true" style="padding:15px 15px">
+        <div class="easyui-layout" style="width:280px;height:320px;padding:0px 0px;border:0px">
+            <div data-options="region:'center'" style="padding: 0px; border: 0px">
+                <select id="lselect" size="10" name="state" style="width: 275px; height: 300px; border-color: #95B8E7"></select>
+            </div>
+        </div>
+    </div>
+    <div id="dlg-path-buttons">
+        <a href="javascript:void(0)" class="easyui-linkbutton c6" iconcls="icon-ok" onclick="saveWorkFlow()" style="width:90px">Save</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" iconcls="icon-cancel" onclick="javascript: $('#dlg-path').dialog('close')" style="width:90px">Cancel</a>
+    </div>
+
+
+    <div id="dlg_WorkFlowInfo" class="easyui-dialog" style="width:450px;height:450px;padding:10px 20px"
+         closed="true" buttons="#dlg-buttons-flow">
+        <div class="ftitle">流程流转信息</div>
+        <div class="fitem">
+            @ViewBag.WfFlowChart
+        </div>
+    </div>
+
+    <div id="dlg-buttons-flow">
+        <a href="javascript:void(0)" class="easyui-linkbutton" iconcls="icon-cancel" onclick="javascript: $('#dlg_WorkFlowInfo').dialog('close')" style="width:90px">Cancel</a>
+    </div>
+
+    <script language="javascript">
+        $(document).ready(function () {
+            if ($.cookie('easyuiThemeName') != null)
+            changeThemeFun($.cookie('easyuiThemeName'));
+        });
+        function OpenPath() {
+            //var node = $('#dg').datagrid('getSelected');
+            //roleid = node.ID;
+            //alert(document.getElementById("iOpinion").value);
+            
+            if (document.getElementById("iOpinion") && document.getElementById("iOpinion").value == "") {
+                alert("请输入审批意见！");
+            }
+             
+            else {
+                if ($('#fm').form('validate')) {
+                    $('#dlg-path').dialog('open').dialog('setTitle', '选择提交环节');
+                    $("#lselect").empty();
+                    $.getJSON("/ItService/GetPossiblePath?id=@ViewBag.instanceId&time=" + new Date()+"&libID=" + $('#lib').combobox('getValue'), function (data) {
+                        $.each(data.rows, function (i, item) {
+                            $('#lselect').append($("<option/>", {
+                                value: item.ID,
+                                text: item.Name
+                            }));
+                        });
+                    });
+                }
+            }
+
+        }
+        function saveWorkFlow() {
+            if ($("#lselect option:selected").text() == "") {
+                $.messager.show({
+                    title: '错误',
+                    msg: '请选择下一环节'
+                })
+                return;
+            }
+            $('#fm').form('submit', {
+                url: '/ItService/ToNextState?instanceId=@ViewBag.instanceId&NextLink=' + $("#lselect option:selected").text() + '&libid='+$('#lib').combobox('getValue') ,
+                onSubmit: function () {
+                    return $(this).form('validate');
+                },
+                success: function (result) {
+                    var result = eval('(' + result + ')');
+                    if (result.errorMsg) {
+                        $.messager.show({
+                            title: 'Error',
+                            msg: result.errorMsg
+                        });
+                    } else {
+                        window.location.href = "/ItService/SubmitSuccess";
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

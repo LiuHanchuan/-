@@ -1,0 +1,643 @@
+﻿<Activity mc:Ignorable="sap sap2010 sads" x:Class="Apache.WorkFlow.ItService"
+ xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities"
+ xmlns:av="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+ xmlns:local="clr-namespace:Apache.Models"
+ xmlns:local1="clr-namespace:Apache.WorkFlow"
+ xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+ xmlns:mca="clr-namespace:Microsoft.CSharp.Activities;assembly=System.Activities"
+ xmlns:sads="http://schemas.microsoft.com/netfx/2010/xaml/activities/debugger"
+ xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation"
+ xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation"
+ xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib"
+ xmlns:sco="clr-namespace:System.Collections.ObjectModel;assembly=mscorlib"
+ xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <x:Members>
+    <x:Property Name="WfIn" Type="InArgument(local:WorkFlowInParameter)" />
+  </x:Members>
+  <sap2010:ExpressionActivityEditor.ExpressionActivityEditor>C#</sap2010:ExpressionActivityEditor.ExpressionActivityEditor>
+  <sap2010:WorkflowViewState.IdRef>Apache.WorkFlow.ItService_1</sap2010:WorkflowViewState.IdRef>
+  <TextExpression.NamespacesForImplementation>
+    <sco:Collection x:TypeArguments="x:String">
+      <x:String>System</x:String>
+      <x:String>System.Collections.Generic</x:String>
+      <x:String>System.Data</x:String>
+      <x:String>System.Linq</x:String>
+      <x:String>System.Text</x:String>
+      <x:String>Apache.Models</x:String>
+    </sco:Collection>
+  </TextExpression.NamespacesForImplementation>
+  <TextExpression.ReferencesForImplementation>
+    <sco:Collection x:TypeArguments="AssemblyReference">
+      <AssemblyReference>EntityFramework</AssemblyReference>
+      <AssemblyReference>EntityFramework.SqlServer</AssemblyReference>
+      <AssemblyReference>EPPlus</AssemblyReference>
+      <AssemblyReference>Microsoft.Activities.Extensions</AssemblyReference>
+      <AssemblyReference>Microsoft.AspNet.Identity.Core</AssemblyReference>
+      <AssemblyReference>Microsoft.AspNet.Identity.EntityFramework</AssemblyReference>
+      <AssemblyReference>Microsoft.CSharp</AssemblyReference>
+      <AssemblyReference>Newtonsoft.Json</AssemblyReference>
+      <AssemblyReference>System</AssemblyReference>
+      <AssemblyReference>System.Activities</AssemblyReference>
+      <AssemblyReference>System.Activities.Core.Presentation</AssemblyReference>
+      <AssemblyReference>System.Activities.DurableInstancing</AssemblyReference>
+      <AssemblyReference>System.Data</AssemblyReference>
+      <AssemblyReference>System.Drawing</AssemblyReference>
+      <AssemblyReference>System.Net.Http.Formatting</AssemblyReference>
+      <AssemblyReference>System.Runtime.DurableInstancing</AssemblyReference>
+      <AssemblyReference>System.ServiceModel</AssemblyReference>
+      <AssemblyReference>System.ServiceModel.Activities</AssemblyReference>
+      <AssemblyReference>System.Transactions</AssemblyReference>
+      <AssemblyReference>System.Web.DynamicData</AssemblyReference>
+      <AssemblyReference>System.Web.Entity</AssemblyReference>
+      <AssemblyReference>System.Web.ApplicationServices</AssemblyReference>
+      <AssemblyReference>System.ComponentModel.DataAnnotations</AssemblyReference>
+      <AssemblyReference>System.Core</AssemblyReference>
+      <AssemblyReference>System.Data.DataSetExtensions</AssemblyReference>
+      <AssemblyReference>System.Web.Http</AssemblyReference>
+      <AssemblyReference>System.Web.Http.WebHost</AssemblyReference>
+      <AssemblyReference>System.Workflow.Activities</AssemblyReference>
+      <AssemblyReference>System.Workflow.ComponentModel</AssemblyReference>
+      <AssemblyReference>System.Xaml</AssemblyReference>
+      <AssemblyReference>System.Xml.Linq</AssemblyReference>
+      <AssemblyReference>System.Web</AssemblyReference>
+      <AssemblyReference>System.Web.Extensions</AssemblyReference>
+      <AssemblyReference>System.Web.Abstractions</AssemblyReference>
+      <AssemblyReference>System.Web.Routing</AssemblyReference>
+      <AssemblyReference>System.Xml</AssemblyReference>
+      <AssemblyReference>System.Configuration</AssemblyReference>
+      <AssemblyReference>System.Web.Services</AssemblyReference>
+      <AssemblyReference>System.EnterpriseServices</AssemblyReference>
+      <AssemblyReference>Microsoft.Web.Infrastructure</AssemblyReference>
+      <AssemblyReference>System.Net.Http</AssemblyReference>
+      <AssemblyReference>System.Net.Http.WebRequest</AssemblyReference>
+      <AssemblyReference>System.Web.Helpers</AssemblyReference>
+      <AssemblyReference>System.Web.Mvc</AssemblyReference>
+      <AssemblyReference>System.Web.Optimization</AssemblyReference>
+      <AssemblyReference>System.Web.Razor</AssemblyReference>
+      <AssemblyReference>System.Web.WebPages</AssemblyReference>
+      <AssemblyReference>System.Web.WebPages.Deployment</AssemblyReference>
+      <AssemblyReference>System.Web.WebPages.Razor</AssemblyReference>
+      <AssemblyReference>WebGrease</AssemblyReference>
+      <AssemblyReference>Antlr3.Runtime</AssemblyReference>
+      <AssemblyReference>Microsoft.AspNet.Identity.Owin</AssemblyReference>
+      <AssemblyReference>Owin</AssemblyReference>
+      <AssemblyReference>Microsoft.Owin</AssemblyReference>
+      <AssemblyReference>Microsoft.Owin.Host.SystemWeb</AssemblyReference>
+      <AssemblyReference>Microsoft.Owin.Security</AssemblyReference>
+      <AssemblyReference>Microsoft.Owin.Security.Facebook</AssemblyReference>
+      <AssemblyReference>Microsoft.Owin.Security.Cookies</AssemblyReference>
+      <AssemblyReference>Microsoft.Owin.Security.OAuth</AssemblyReference>
+      <AssemblyReference>Microsoft.Owin.Security.Google</AssemblyReference>
+      <AssemblyReference>Microsoft.Owin.Security.Twitter</AssemblyReference>
+      <AssemblyReference>Microsoft.Owin.Security.MicrosoftAccount</AssemblyReference>
+      <AssemblyReference>mscorlib</AssemblyReference>
+      <AssemblyReference>Apache</AssemblyReference>
+    </sco:Collection>
+  </TextExpression.ReferencesForImplementation>
+  <StateMachine sap2010:WorkflowViewState.IdRef="StateMachine_1">
+    <StateMachine.InitialState>
+      <State x:Name="__ReferenceID0" DisplayName="起草申请" sap2010:WorkflowViewState.IdRef="State_2">
+        <State.Entry>
+          <Sequence sap2010:WorkflowViewState.IdRef="Sequence_1">
+            <Assign sap2010:WorkflowViewState.IdRef="Assign_1">
+              <Assign.To>
+                <OutArgument x:TypeArguments="x:String">
+                  <mca:CSharpReference x:TypeArguments="x:String">CurrentUser</mca:CSharpReference>
+                </OutArgument>
+              </Assign.To>
+              <Assign.Value>
+                <InArgument x:TypeArguments="x:String">
+                  <mca:CSharpValue x:TypeArguments="x:String">WfIn.drafter</mca:CSharpValue>
+                </InArgument>
+              </Assign.Value>
+            </Assign>
+            <local1:ItServiceBookMark OpinionField="{x:Null}" BookmarkName="起草申请" sap2010:WorkflowViewState.IdRef="ItServiceBookMark_5">
+              <local1:ItServiceBookMark.CurrentUser>
+                <InArgument x:TypeArguments="x:String">
+                  <mca:CSharpValue x:TypeArguments="x:String">CurrentUser</mca:CSharpValue>
+                </InArgument>
+              </local1:ItServiceBookMark.CurrentUser>
+              <local1:ItServiceBookMark.Result>
+                <OutArgument x:TypeArguments="x:String">
+                  <mca:CSharpReference x:TypeArguments="x:String">NextLink</mca:CSharpReference>
+                </OutArgument>
+              </local1:ItServiceBookMark.Result>
+              <local1:ItServiceBookMark.WorkFlowInParameters>
+                <InArgument x:TypeArguments="local:WorkFlowInParameter">
+                  <mca:CSharpValue x:TypeArguments="local:WorkFlowInParameter">WfIn</mca:CSharpValue>
+                </InArgument>
+              </local1:ItServiceBookMark.WorkFlowInParameters>
+            </local1:ItServiceBookMark>
+          </Sequence>
+        </State.Entry>
+        <State.Transitions>
+          <Transition DisplayName="第一级审批" sap2010:WorkflowViewState.IdRef="Transition_1">
+            <Transition.Condition>
+              <mca:CSharpValue x:TypeArguments="x:Boolean">NextLink== "第一级审批"</mca:CSharpValue>
+            </Transition.Condition>
+            <Transition.To>
+              <State x:Name="__ReferenceID4" DisplayName="第一级审批" sap2010:WorkflowViewState.IdRef="State_9">
+                <State.Entry>
+                  <Sequence sap2010:WorkflowViewState.IdRef="Sequence_2">
+                    <Assign sap2010:WorkflowViewState.IdRef="Assign_2">
+                      <Assign.To>
+                        <OutArgument x:TypeArguments="x:String">
+                          <mca:CSharpReference x:TypeArguments="x:String">CurrentUser</mca:CSharpReference>
+                        </OutArgument>
+                      </Assign.To>
+                      <Assign.Value>
+                        <InArgument x:TypeArguments="x:String">ds11</InArgument>
+                      </Assign.Value>
+                    </Assign>
+                    <Assign sap2010:WorkflowViewState.IdRef="Assign_13">
+                      <Assign.To>
+                        <OutArgument x:TypeArguments="x:String">
+                          <mca:CSharpReference x:TypeArguments="x:String">OpinionField</mca:CSharpReference>
+                        </OutArgument>
+                      </Assign.To>
+                      <Assign.Value>
+                        <InArgument x:TypeArguments="x:String">FirstExamine</InArgument>
+                      </Assign.Value>
+                    </Assign>
+                    <local1:ItServiceBookMark BookmarkName="第一级审批" sap2010:WorkflowViewState.IdRef="ItServiceBookMark_2">
+                      <local1:ItServiceBookMark.CurrentUser>
+                        <InArgument x:TypeArguments="x:String">
+                          <mca:CSharpValue x:TypeArguments="x:String">CurrentUser</mca:CSharpValue>
+                        </InArgument>
+                      </local1:ItServiceBookMark.CurrentUser>
+                      <local1:ItServiceBookMark.OpinionField>
+                        <InArgument x:TypeArguments="x:String">
+                          <mca:CSharpValue x:TypeArguments="x:String">OpinionField</mca:CSharpValue>
+                        </InArgument>
+                      </local1:ItServiceBookMark.OpinionField>
+                      <local1:ItServiceBookMark.Result>
+                        <OutArgument x:TypeArguments="x:String">
+                          <mca:CSharpReference x:TypeArguments="x:String">NextLink</mca:CSharpReference>
+                        </OutArgument>
+                      </local1:ItServiceBookMark.Result>
+                      <local1:ItServiceBookMark.WorkFlowInParameters>
+                        <InArgument x:TypeArguments="local:WorkFlowInParameter">
+                          <mca:CSharpValue x:TypeArguments="local:WorkFlowInParameter">WfIn</mca:CSharpValue>
+                        </InArgument>
+                      </local1:ItServiceBookMark.WorkFlowInParameters>
+                    </local1:ItServiceBookMark>
+                    <Assign sap2010:WorkflowViewState.IdRef="Assign_14">
+                      <Assign.To>
+                        <OutArgument x:TypeArguments="x:String">
+                          <mca:CSharpReference x:TypeArguments="x:String">OpinionField</mca:CSharpReference>
+                        </OutArgument>
+                      </Assign.To>
+                      <Assign.Value>
+                        <InArgument x:TypeArguments="x:String">
+                          <Literal x:TypeArguments="x:String" Value="" />
+                        </InArgument>
+                      </Assign.Value>
+                    </Assign>
+                  </Sequence>
+                </State.Entry>
+                <State.Transitions>
+                  <Transition DisplayName="驳回" sap2010:WorkflowViewState.IdRef="Transition_12" To="{x:Reference __ReferenceID0}">
+                    <Transition.Condition>
+                      <mca:CSharpValue x:TypeArguments="x:Boolean">NextLink=="驳回"</mca:CSharpValue>
+                    </Transition.Condition>
+                  </Transition>
+                  <Transition DisplayName="第二级审批" sap2010:WorkflowViewState.IdRef="Transition_8">
+                    <Transition.Condition>
+                      <mca:CSharpValue x:TypeArguments="x:Boolean">NextLink=="第二级审批"</mca:CSharpValue>
+                    </Transition.Condition>
+                    <Transition.To>
+                      <State x:Name="__ReferenceID3" DisplayName="第二级审批" sap2010:WorkflowViewState.IdRef="State_6">
+                        <State.Entry>
+                          <Sequence sap2010:WorkflowViewState.IdRef="Sequence_3">
+                            <Assign sap2010:WorkflowViewState.IdRef="Assign_3">
+                              <Assign.To>
+                                <OutArgument x:TypeArguments="x:String">
+                                  <mca:CSharpReference x:TypeArguments="x:String">CurrentUser</mca:CSharpReference>
+                                </OutArgument>
+                              </Assign.To>
+                              <Assign.Value>
+                                <InArgument x:TypeArguments="x:String">jskkz</InArgument>
+                              </Assign.Value>
+                            </Assign>
+                            <Assign sap2010:WorkflowViewState.IdRef="Assign_15">
+                              <Assign.To>
+                                <OutArgument x:TypeArguments="x:String">
+                                  <mca:CSharpReference x:TypeArguments="x:String">OpinionField</mca:CSharpReference>
+                                </OutArgument>
+                              </Assign.To>
+                              <Assign.Value>
+                                <InArgument x:TypeArguments="x:String">SecondExamine</InArgument>
+                              </Assign.Value>
+                            </Assign>
+                            <local1:ItServiceBookMark BookmarkName="第二级审批" sap2010:WorkflowViewState.IdRef="ItServiceBookMark_3">
+                              <local1:ItServiceBookMark.CurrentUser>
+                                <InArgument x:TypeArguments="x:String">
+                                  <mca:CSharpValue x:TypeArguments="x:String">CurrentUser</mca:CSharpValue>
+                                </InArgument>
+                              </local1:ItServiceBookMark.CurrentUser>
+                              <local1:ItServiceBookMark.OpinionField>
+                                <InArgument x:TypeArguments="x:String">
+                                  <mca:CSharpValue x:TypeArguments="x:String">OpinionField</mca:CSharpValue>
+                                </InArgument>
+                              </local1:ItServiceBookMark.OpinionField>
+                              <local1:ItServiceBookMark.Result>
+                                <OutArgument x:TypeArguments="x:String">
+                                  <mca:CSharpReference x:TypeArguments="x:String">NextLink</mca:CSharpReference>
+                                </OutArgument>
+                              </local1:ItServiceBookMark.Result>
+                              <local1:ItServiceBookMark.WorkFlowInParameters>
+                                <InArgument x:TypeArguments="local:WorkFlowInParameter">
+                                  <mca:CSharpValue x:TypeArguments="local:WorkFlowInParameter">WfIn</mca:CSharpValue>
+                                </InArgument>
+                              </local1:ItServiceBookMark.WorkFlowInParameters>
+                            </local1:ItServiceBookMark>
+                            <Assign sap2010:WorkflowViewState.IdRef="Assign_16">
+                              <Assign.To>
+                                <OutArgument x:TypeArguments="x:String">
+                                  <mca:CSharpReference x:TypeArguments="x:String">OpinionField</mca:CSharpReference>
+                                </OutArgument>
+                              </Assign.To>
+                              <Assign.Value>
+                                <InArgument x:TypeArguments="x:String">
+                                  <Literal x:TypeArguments="x:String" Value="" />
+                                </InArgument>
+                              </Assign.Value>
+                            </Assign>
+                          </Sequence>
+                        </State.Entry>
+                        <State.Transitions>
+                          <Transition DisplayName="驳回" sap2010:WorkflowViewState.IdRef="Transition_7" To="{x:Reference __ReferenceID0}">
+                            <Transition.Condition>
+                              <mca:CSharpValue x:TypeArguments="x:Boolean">NextLink == "驳回"</mca:CSharpValue>
+                            </Transition.Condition>
+                          </Transition>
+                          <Transition DisplayName="库管理员/科室审批" sap2010:WorkflowViewState.IdRef="Transition_17">
+                            <Transition.Condition>
+                              <mca:CSharpValue x:TypeArguments="x:Boolean">NextLink == "库管理员/科室审批"</mca:CSharpValue>
+                            </Transition.Condition>
+                            <Transition.To>
+                              <State x:Name="__ReferenceID1" DisplayName="库管理员/科室审批" sap2010:WorkflowViewState.IdRef="State_10">
+                                <State.Entry>
+                                  <Sequence sap2010:WorkflowViewState.IdRef="Sequence_9">
+                                    <Assign sap2010:WorkflowViewState.IdRef="Assign_9">
+                                      <Assign.To>
+                                        <OutArgument x:TypeArguments="x:String">
+                                          <mca:CSharpReference x:TypeArguments="x:String">CurrentUser</mca:CSharpReference>
+                                        </OutArgument>
+                                      </Assign.To>
+                                      <Assign.Value>
+                                        <InArgument x:TypeArguments="x:String">DB11</InArgument>
+                                      </Assign.Value>
+                                    </Assign>
+                                    <Assign sap2010:WorkflowViewState.IdRef="Assign_17">
+                                      <Assign.To>
+                                        <OutArgument x:TypeArguments="x:String">
+                                          <mca:CSharpReference x:TypeArguments="x:String">OpinionField</mca:CSharpReference>
+                                        </OutArgument>
+                                      </Assign.To>
+                                      <Assign.Value>
+                                        <InArgument x:TypeArguments="x:String">LastExamine</InArgument>
+                                      </Assign.Value>
+                                    </Assign>
+                                    <local1:ItServiceBookMark BookmarkName="库管理员/科室审批" sap2010:WorkflowViewState.IdRef="ItServiceBookMark_10">
+                                      <local1:ItServiceBookMark.CurrentUser>
+                                        <InArgument x:TypeArguments="x:String">
+                                          <mca:CSharpValue x:TypeArguments="x:String">CurrentUser</mca:CSharpValue>
+                                        </InArgument>
+                                      </local1:ItServiceBookMark.CurrentUser>
+                                      <local1:ItServiceBookMark.OpinionField>
+                                        <InArgument x:TypeArguments="x:String">
+                                          <mca:CSharpValue x:TypeArguments="x:String">OpinionField</mca:CSharpValue>
+                                        </InArgument>
+                                      </local1:ItServiceBookMark.OpinionField>
+                                      <local1:ItServiceBookMark.Result>
+                                        <OutArgument x:TypeArguments="x:String">
+                                          <mca:CSharpReference x:TypeArguments="x:String">NextLink</mca:CSharpReference>
+                                        </OutArgument>
+                                      </local1:ItServiceBookMark.Result>
+                                      <local1:ItServiceBookMark.WorkFlowInParameters>
+                                        <InArgument x:TypeArguments="local:WorkFlowInParameter">
+                                          <mca:CSharpValue x:TypeArguments="local:WorkFlowInParameter">WfIn</mca:CSharpValue>
+                                        </InArgument>
+                                      </local1:ItServiceBookMark.WorkFlowInParameters>
+                                    </local1:ItServiceBookMark>
+                                    <Assign sap2010:WorkflowViewState.IdRef="Assign_18">
+                                      <Assign.To>
+                                        <OutArgument x:TypeArguments="x:String">
+                                          <mca:CSharpReference x:TypeArguments="x:String">OpinionField</mca:CSharpReference>
+                                        </OutArgument>
+                                      </Assign.To>
+                                      <Assign.Value>
+                                        <InArgument x:TypeArguments="x:String">
+                                          <Literal x:TypeArguments="x:String" Value="" />
+                                        </InArgument>
+                                      </Assign.Value>
+                                    </Assign>
+                                  </Sequence>
+                                </State.Entry>
+                                <State.Transitions>
+                                  <Transition DisplayName="驳回" sap2010:WorkflowViewState.IdRef="Transition_25" To="{x:Reference __ReferenceID0}">
+                                    <Transition.Condition>
+                                      <mca:CSharpValue x:TypeArguments="x:Boolean">NextLink == "驳回"</mca:CSharpValue>
+                                    </Transition.Condition>
+                                  </Transition>
+                                  <Transition DisplayName="完成" sap2010:WorkflowViewState.IdRef="Transition_16">
+                                    <Transition.Condition>
+                                      <mca:CSharpValue x:TypeArguments="x:Boolean">NextLink == "完成"</mca:CSharpValue>
+                                    </Transition.Condition>
+                                    <Transition.To>
+                                      <State x:Name="__ReferenceID2" DisplayName="流程结束" sap2010:WorkflowViewState.IdRef="State_11" IsFinal="True" />
+                                    </Transition.To>
+                                  </Transition>
+                                </State.Transitions>
+                              </State>
+                            </Transition.To>
+                          </Transition>
+                        </State.Transitions>
+                      </State>
+                    </Transition.To>
+                  </Transition>
+                  <Transition DisplayName="库管理员/科室审批" sap2010:WorkflowViewState.IdRef="Transition_26" To="{x:Reference __ReferenceID1}">
+                    <Transition.Condition>
+                      <mca:CSharpValue x:TypeArguments="x:Boolean">NextLink == "库管理员/科室审批"</mca:CSharpValue>
+                    </Transition.Condition>
+                  </Transition>
+                  <Transition DisplayName="完成" sap2010:WorkflowViewState.IdRef="Transition_29" To="{x:Reference __ReferenceID2}">
+                    <Transition.Condition>
+                      <mca:CSharpValue x:TypeArguments="x:Boolean">NextLink == "完成"</mca:CSharpValue>
+                    </Transition.Condition>
+                  </Transition>
+                </State.Transitions>
+              </State>
+            </Transition.To>
+          </Transition>
+          <Transition DisplayName="第二级审批" sap2010:WorkflowViewState.IdRef="Transition_27" To="{x:Reference __ReferenceID3}">
+            <Transition.Condition>
+              <mca:CSharpValue x:TypeArguments="x:Boolean">NextLink == "第二级审批"</mca:CSharpValue>
+            </Transition.Condition>
+          </Transition>
+          <Transition DisplayName="库管理员/科室审批" sap2010:WorkflowViewState.IdRef="Transition_28" To="{x:Reference __ReferenceID1}">
+            <Transition.Condition>
+              <mca:CSharpValue x:TypeArguments="x:Boolean">NextLink == "库管理员/科室审批"</mca:CSharpValue>
+            </Transition.Condition>
+          </Transition>
+          <Transition DisplayName="撤销" sap2010:WorkflowViewState.IdRef="Transition_30">
+            <Transition.Condition>
+              <mca:CSharpValue x:TypeArguments="x:Boolean">NextLink == "撤销"</mca:CSharpValue>
+            </Transition.Condition>
+            <Transition.To>
+              <State x:Name="__ReferenceID5" DisplayName="撤销" sap2010:WorkflowViewState.IdRef="State_12" IsFinal="True" />
+            </Transition.To>
+          </Transition>
+        </State.Transitions>
+      </State>
+    </StateMachine.InitialState>
+    <x:Reference>__ReferenceID0</x:Reference>
+    <x:Reference>__ReferenceID4</x:Reference>
+    <x:Reference>__ReferenceID3</x:Reference>
+    <x:Reference>__ReferenceID1</x:Reference>
+    <x:Reference>__ReferenceID2</x:Reference>
+    <x:Reference>__ReferenceID5</x:Reference>
+    <StateMachine.Variables>
+      <Variable x:TypeArguments="x:String" Name="CurrentUser" />
+      <Variable x:TypeArguments="x:String" Name="NextLink" />
+      <Variable x:TypeArguments="x:String" Name="OpinionField" />
+    </StateMachine.Variables>
+    <sads:DebugSymbol.Symbol>dzdDOlxSaWdodHNBcHByb3ZhbFByb2Nlc3NcQXBhY2hlXFdvcmtGbG93XEl0U2VydmljZS54YW1sTGEDlwMSAgEBYweJAw8DAbsBiwEP8wIXAgF40QEX5QIfAgE/lwIf4QInAgEG3QIn3QKVAQIBBIUDD4UDewIBAmULgwEWAwHSAYgBD4gBYAMBzAH4Ag/4AmEDAccB/QIP/QJlAwHCAYIDD4IDXgMBvQGNARPEAR4DAY8ByQEXyQFkAwGJAc4BF84BZwMBhAHqAhfqAm0CAX/vAhfvAmYCAXrTARuKAiYCAUyPAh+PAm4CAUaUAh+UAnUCAUGZAiPQAi4CARPVAifVAnYCAQ3aAifaAnYCAQhmDXEWAwHkAXINggEoAwHTAY4BFZcBHgMBtAGYARWhAR4DAa0BogEVtwEwAwGXAbgBFcMBHgMBkAHUAR3dASYCAXHeAR3nASYCAWroAR39ATgCAVT+AR2JAiYCAU2aAiWjAi4CATikAiWtAi4CATGuAiXDAkACARvEAiXPAi4CARRuE25dAwHqAWkTaWQDAeUBckxyUgMB4wF1E3VcAwHeAXoTemEDAdkBfxN/ZgMB1AGVAUCVAUQDAboBkQEbkQFsAwG1AZ8BQJ8BTAMBswGbARubAW0DAa4BogE8ogFDAwGsAaoBG6oBZQMBpwGlARulAWQDAaIBrwEbrwFpAwGdAbQBG7QBbgMBmAHAARvAAUoDAZYBuwEbuwFtAwGRAdsBSNsBTQIBd9cBI9cBdAIBcuUBSOUBVQIBcOEBI+EBdQIBa+gBROgBSwIBafABI/ABbQIBZOsBI+sBbAIBX/UBI/UBcQIBWvoBI/oBdgIBVYYCI4YCUgIBU4ECI4ECdQIBTqECUKECVAIBPp0CK50CfAIBOasCUKsCWwIBN6cCK6cCfQIBMq4CTK4CVwIBMLYCK7YCdQIBK7ECK7ECdAIBJrsCK7sCeQIBIcACK8ACfgIBHMwCK8wCWgIBGscCK8cCfQIBFQ==</sads:DebugSymbol.Symbol>
+  </StateMachine>
+  <sap2010:WorkflowViewState.ViewStateManager>
+    <sap2010:ViewStateManager>
+      <sap2010:ViewStateData Id="Assign_1" sap:VirtualizedContainerService.HintSize="244,61.6" />
+      <sap2010:ViewStateData Id="ItServiceBookMark_5" sap:VirtualizedContainerService.HintSize="244,22.4" />
+      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="266.4,248.8">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            <x:Boolean x:Key="IsPinned">False</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="Assign_2" sap:VirtualizedContainerService.HintSize="244,61.6" />
+      <sap2010:ViewStateData Id="Assign_13" sap:VirtualizedContainerService.HintSize="244,61.6" />
+      <sap2010:ViewStateData Id="ItServiceBookMark_2" sap:VirtualizedContainerService.HintSize="244,22.4" />
+      <sap2010:ViewStateData Id="Assign_14" sap:VirtualizedContainerService.HintSize="244,61.6" />
+      <sap2010:ViewStateData Id="Sequence_2" sap:VirtualizedContainerService.HintSize="266.4,452">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="Transition_12" sap:VirtualizedContainerService.HintSize="429.6,511.2">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <av:PointCollection x:Key="ConnectorLocation">1473.8,350.22 1503.8,350.22 1503.8,154.68 1377.2,154.68</av:PointCollection>
+            <x:Int32 x:Key="SrcConnectionPointIndex">40</x:Int32>
+            <x:Int32 x:Key="DestConnectionPointIndex">40</x:Int32>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="Assign_3" sap:VirtualizedContainerService.HintSize="244,61.6" />
+      <sap2010:ViewStateData Id="Assign_15" sap:VirtualizedContainerService.HintSize="244,61.6" />
+      <sap2010:ViewStateData Id="ItServiceBookMark_3" sap:VirtualizedContainerService.HintSize="244,22.4" />
+      <sap2010:ViewStateData Id="Assign_16" sap:VirtualizedContainerService.HintSize="244,61.6" />
+      <sap2010:ViewStateData Id="Sequence_3" sap:VirtualizedContainerService.HintSize="266.4,452">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="Transition_7" sap:VirtualizedContainerService.HintSize="429.6,505.6">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <av:PointCollection x:Key="ConnectorLocation">1197.6,529.52 1167.6,529.52 1167.6,135.96 1202.8,135.96</av:PointCollection>
+            <x:Int32 x:Key="SrcConnectionPointIndex">45</x:Int32>
+            <x:Int32 x:Key="DestConnectionPointIndex">25</x:Int32>
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="Assign_9" sap:VirtualizedContainerService.HintSize="244,61.6" />
+      <sap2010:ViewStateData Id="Assign_17" sap:VirtualizedContainerService.HintSize="244,61.6" />
+      <sap2010:ViewStateData Id="ItServiceBookMark_10" sap:VirtualizedContainerService.HintSize="244,22.4" />
+      <sap2010:ViewStateData Id="Assign_18" sap:VirtualizedContainerService.HintSize="244,61.6" />
+      <sap2010:ViewStateData Id="Sequence_9" sap:VirtualizedContainerService.HintSize="266.4,452">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="Transition_25" sap:VirtualizedContainerService.HintSize="429.6,511.2">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <av:PointCollection x:Key="ConnectorLocation">1490.4,710.6 1606.58120903132,710.6 1606.58120903132,135.96 1377.2,135.96</av:PointCollection>
+            <x:Int32 x:Key="SrcConnectionPointIndex">56</x:Int32>
+            <x:Int32 x:Key="DestConnectionPointIndex">24</x:Int32>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="State_11" sap:VirtualizedContainerService.HintSize="223.2,71.2">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <av:Point x:Key="ShapeLocation">1238.4,834.4</av:Point>
+            <av:Size x:Key="ShapeSize">223.2,71.2</av:Size>
+            <x:Boolean x:Key="IsPinned">False</x:Boolean>
+            <x:Double x:Key="StateContainerWidth">208.82388929351862</x:Double>
+            <x:Double x:Key="StateContainerHeight">34.319999999999709</x:Double>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="Transition_16" sap:VirtualizedContainerService.HintSize="429.6,511.2">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <av:PointCollection x:Key="ConnectorLocation">1293.84,731.2 1293.84,761.2 1372.32,761.2 1372.32,834.4</av:PointCollection>
+            <x:Int32 x:Key="SrcConnectionPointIndex">23</x:Int32>
+            <x:Int32 x:Key="DestConnectionPointIndex">46</x:Int32>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="State_10" sap:VirtualizedContainerService.HintSize="280.8,82.4">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <av:Point x:Key="ShapeLocation">1209.6,648.8</av:Point>
+            <av:Size x:Key="ShapeSize">280.8,82.4</av:Size>
+            <x:Boolean x:Key="IsPinned">False</x:Boolean>
+            <x:Double x:Key="StateContainerWidth">266.49298946590022</x:Double>
+            <x:Double x:Key="StateContainerHeight">45.977088586768957</x:Double>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="Transition_17" sap:VirtualizedContainerService.HintSize="429.6,511.2">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <av:PointCollection x:Key="ConnectorLocation">1311.52,567.6 1311.52,597.6 1350,597.6 1350,648.8</av:PointCollection>
+            <x:Int32 x:Key="SrcConnectionPointIndex">31</x:Int32>
+            <x:Int32 x:Key="DestConnectionPointIndex">38</x:Int32>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="State_6" sap:VirtualizedContainerService.HintSize="284.8,95.2">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <av:Point x:Key="ShapeLocation">1197.6,472.4</av:Point>
+            <av:Size x:Key="ShapeSize">284.8,95.2</av:Size>
+            <x:Boolean x:Key="IsPinned">False</x:Boolean>
+            <x:Double x:Key="StateContainerWidth">270.1813133705229</x:Double>
+            <x:Double x:Key="StateContainerHeight">58.778055466240062</x:Double>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="Transition_8" sap:VirtualizedContainerService.HintSize="429.6,505.6">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <av:PointCollection x:Key="ConnectorLocation">1307.72,390.9 1307.72,420.9 1382.72,420.9 1382.72,472.4</av:PointCollection>
+            <x:Int32 x:Key="SrcConnectionPointIndex">31</x:Int32>
+            <x:Int32 x:Key="DestConnectionPointIndex">50</x:Int32>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="Transition_26" sap:VirtualizedContainerService.HintSize="429.6,505.6">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <av:PointCollection x:Key="ConnectorLocation">1473.8,377.34 1528.78892935178,377.34 1528.78892935178,677.64 1490.4,677.64</av:PointCollection>
+            <x:Int32 x:Key="SrcConnectionPointIndex">64</x:Int32>
+            <x:Int32 x:Key="DestConnectionPointIndex">24</x:Int32>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="Transition_29" sap:VirtualizedContainerService.HintSize="429.6,511.2">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <av:PointCollection x:Key="ConnectorLocation">1446.12,390.9 1446.12,455.16 1719.33624454148,455.16 1719.33624454148,873.56 1461.6,873.56</av:PointCollection>
+            <x:Int32 x:Key="SrcConnectionPointIndex">71</x:Int32>
+            <x:Int32 x:Key="DestConnectionPointIndex">40</x:Int32>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="State_9" sap:VirtualizedContainerService.HintSize="276.8,90.4">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <av:Point x:Key="ShapeLocation">1197,300.5</av:Point>
+            <av:Size x:Key="ShapeSize">276.8,90.4</av:Size>
+            <x:Boolean x:Key="IsPinned">False</x:Boolean>
+            <x:Double x:Key="StateContainerWidth">262</x:Double>
+            <x:Double x:Key="StateContainerHeight">53.326666666666682</x:Double>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="Transition_1" sap:VirtualizedContainerService.HintSize="429.6,511.2">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <av:PointCollection x:Key="ConnectorLocation">1281.28,196.8 1281.28,226.8 1335.4,226.8 1335.4,300.5</av:PointCollection>
+            <x:Int32 x:Key="SrcConnectionPointIndex">35</x:Int32>
+            <x:Int32 x:Key="DestConnectionPointIndex">38</x:Int32>
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="Transition_27" sap:VirtualizedContainerService.HintSize="429.6,511.2">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <av:PointCollection x:Key="ConnectorLocation">1202.8,159.36 1097.49045884924,159.36 1097.49045884924,510.48 1197.6,510.48</av:PointCollection>
+            <x:Int32 x:Key="SrcConnectionPointIndex">45</x:Int32>
+            <x:Int32 x:Key="DestConnectionPointIndex">29</x:Int32>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="Transition_28" sap:VirtualizedContainerService.HintSize="429.6,511.2">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <av:PointCollection x:Key="ConnectorLocation">1202.8,178.08 1036,178.08 1036,698.24 1209.6,698.24</av:PointCollection>
+            <x:Int32 x:Key="SrcConnectionPointIndex">61</x:Int32>
+            <x:Int32 x:Key="DestConnectionPointIndex">45</x:Int32>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="State_12" sap:VirtualizedContainerService.HintSize="164.8,72">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <av:Point x:Key="ShapeLocation">1657.6,104</av:Point>
+            <av:Size x:Key="ShapeSize">164.8,72</av:Size>
+            <x:Boolean x:Key="IsPinned">False</x:Boolean>
+            <x:Double x:Key="StateContainerWidth">150.49696969697004</x:Double>
+            <x:Double x:Key="StateContainerHeight">35.082640686011842</x:Double>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="Transition_30" sap:VirtualizedContainerService.HintSize="429.6,511.2">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <av:PointCollection x:Key="ConnectorLocation">1377.2,173.4 1407.2,173.4 1407.2,206 1723.52,206 1723.52,176</av:PointCollection>
+            <x:Int32 x:Key="SrcConnectionPointIndex">56</x:Int32>
+            <x:Int32 x:Key="DestConnectionPointIndex">31</x:Int32>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="State_2" sap:VirtualizedContainerService.HintSize="174.4,93.6">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <av:Point x:Key="ShapeLocation">1202.8,103.2</av:Point>
+            <av:Size x:Key="ShapeSize">174.4,93.6</av:Size>
+            <x:Boolean x:Key="IsPinned">False</x:Boolean>
+            <x:Double x:Key="StateContainerWidth">160</x:Double>
+            <x:Double x:Key="StateContainerHeight">56.526666666643536</x:Double>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="StateMachine_1" sap:VirtualizedContainerService.HintSize="3884.8,1829.6">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+            <av:Point x:Key="ShapeLocation">1020,2.4</av:Point>
+            <x:Double x:Key="StateContainerWidth">3870</x:Double>
+            <x:Double x:Key="StateContainerHeight">1792.6733333333332</x:Double>
+            <av:PointCollection x:Key="ConnectorLocation">1077,77.6 1077,107.6 1110,107.6 1110,77.6 1281.28,77.6 1281.28,103.2</av:PointCollection>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="Apache.WorkFlow.ItService_1" sap:VirtualizedContainerService.HintSize="3924.8,1909.6" />
+    </sap2010:ViewStateManager>
+  </sap2010:WorkflowViewState.ViewStateManager>
+</Activity>

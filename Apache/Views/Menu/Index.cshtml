@@ -1,0 +1,274 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - 模块管理</title>
+    @Styles.Render("~/Content/easyui")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/easyui")
+    @Scripts.Render("~/bundles/easyuivalidate")
+
+</head>
+
+<body>
+    <div id="p" class="easyui-panel" title="模块管理"
+         style="padding:10px;background:#fafafa;"
+         data-options="iconCls:'icon-save',closable:true,
+                collapsible:true,minimizable:true,maximizable:true">
+
+        <table id="tg" title="模块管理" class="easyui-treegrid" style="width:700px;height:500px" data-options="url: '/menu/menulist',method: 'post',lines: true,rownumbers: true,idField: 'ID',treeField: 'menuName',toolbar:'#toolbar',fitColumns:'true',fit:'true'">
+            <thead>
+                <tr>
+                    <th data-options="field:'menuName'" width="220">名称</th>
+                    <th data-options="field:'menuType'" width="100">模块类型</th>
+                    <th data-options="field:'isMenu'" width="100">是否菜单</th>
+                    <th data-options="field:'menuController'" width="150">控制器名称</th>
+                    <th data-options="field:'menuAction'" width="150">行为名称</th>
+                    <th data-options="field:'menuOrder'" width="150">排序</th>
+                    <th data-options="field:'menuIcon'" width="150">图标</th>
+                    <th data-options="field:'menuNote'" width="150">备注</th>
+                </tr>
+            </thead>
+        </table>
+        <div id="toolbar">
+            <a href="javascript:void(0)" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="newMenu()" disabled="true" id="badd">新增</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="editMenu()" disabled="true" id="bedit">编辑</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="destroyMenu()" disabled="true" id="bdel">删除</a>
+        </div>
+        <div id="dlg" class="easyui-dialog" style="width:400px;height:375px;padding:10px 20px"
+             closed="true" buttons="#dlg-buttons" modal="true">
+            <form id="fm" method="post" novalidate>
+                <div class="fitem">
+                    <label>名称:</label>
+                    <input id="mName" name="menuName" class="easyui-textbox" required="true">
+                </div>
+                <div class="fitem">
+                    <label>模块类型:</label>
+                    <input id="mType" name="menuType" class="easyui-textbox">
+                </div>
+                <div class="fitem">
+                    <label>是否菜单:</label>
+                    <select id="iMenu" class="easyui-combobox" name="isMenu">
+                        <option value="是" selected="selected">是</option>
+                        <option value="否">否</option>
+                    </select>
+                </div>
+                <div class="fitem">
+                    <label>控制器名称:</label>
+                    <input id="mController" name="menuController" class="easyui-textbox">
+                </div>
+                <div class="fitem">
+                    <label>行为名称:</label>
+                    <input id="mAction" name="menuAction" class="easyui-textbox">
+                </div>
+                <div class="fitem">
+                    <label>排序:</label>
+                    <input id="mOrder" name="menuOrder" class="easyui-textbox" required="true" validtype="integer">
+                </div>
+                <div class="fitem">
+                    <label>图标:</label>
+                    <input id="mIcon" name="menuIcon" class="easyui-textbox">
+                </div>
+                <div class="fitem">
+                    <label>备注:</label>
+                    <input id="mNote" name="menuNote" class="easyui-textbox" data-options="multiline:true" style="height:50px">
+                </div>
+            </form>
+        </div>
+        <div id="dlg-buttons">
+            <a href="javascript:void(0)" class="easyui-linkbutton c6" iconcls="icon-ok" onclick="saveMenu()" style="width:90px">Save</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" iconcls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')" style="width:90px">Cancel</a>
+        </div>
+        <script type="text/javascript">
+            var url;
+            function newMenu() {
+                var node = $('#tg').treegrid('getSelected');
+                $('#fm').form('clear');
+                if (node.menuType == "功能") {
+                    $.messager.show({
+                        title: '提示信息',
+                        msg: '不能在功能下添加项目'
+                    });
+                }
+                else {
+                    if (node.menuType == "根模块") {
+                        $('#iMenu').combobox("enable");
+                        $('#iMenu').combobox('select', "是");
+                        $('#iMenu').combobox({ editable: false });
+                        $('#mType').textbox('readonly');
+                        $('#mType').textbox('setValue', '模块目录');
+                        $('#mController').textbox('disable');
+                        $('#mAction').textbox("disable");
+
+                    } else if (node.menuType == "模块目录") {
+                        $('#iMenu').combobox('select', "");
+                        $('#iMenu').combobox("disable");
+                        $('#mType').textbox('readonly');
+                        $('#mType').textbox('setValue', '模块');
+                        $('#mController').textbox('enable');
+                        $('#mAction').textbox('enable');
+                    } else if (node.menuType == "模块") {
+                        $('#iMenu').combobox('select', "");
+                        $('#iMenu').combobox("disable");
+                        $('#mType').textbox('setValue', '功能');
+                        $('#mController').textbox('enable');
+                        $('#mAction').textbox('enable');
+                    } else {
+                        $('#iMenu').combobox('select', "");
+                        $('#iMenu').combobox("disable");
+                        $('#mName').textbox("disable");
+                        $('#mType').textbox("disable");
+                        $('#mAction').textbox("disable");
+                        $('#mController').textbox('disable');
+                        $('#mOrder').textbox("disable");
+                        $('#mNote').textbox("disable");
+                    }
+                    $('#dlg').dialog('open').dialog('setTitle', '添加模块项目');
+                    url = '/Menu/CreateMenu/' + node.ID;
+                }
+      
+            }
+            function editMenu() {
+                var node = $('#tg').treegrid('getSelected');
+                if (node) {
+
+                    if (node.menuType == "根模块") {
+                        $('#iMenu').combobox('select', "");
+                        $('#iMenu').combobox("disable");
+                        $('#mType').textbox('readonly');       
+                        $('#mController').textbox('disable');
+                        $('#mAction').textbox("disable");
+
+                    } else if (node.menuType == "模块目录") {
+                        $('#iMenu').combobox("enable");
+                        $('#iMenu').combobox('select', "是");
+                        $('#iMenu').combobox({ editable: false });
+                        $('#mType').textbox('readonly');
+                        $('#mController').textbox('disable');
+                        $('#mAction').textbox("disable");
+                    } else if (node.menuType == "模块") {
+                        $('#iMenu').combobox('select', "");
+                        $('#iMenu').combobox("disable");
+                        $('#mType').textbox('readonly');
+                        $('#mController').textbox('enable');
+                        $('#mAction').textbox('enable');
+                    } else if (node.menuType == "功能") {
+                        $('#iMenu').combobox('select', "");
+                        $('#iMenu').combobox("disable");
+                        $('#mType').textbox('readonly');
+                        $('#mController').textbox('enable');
+                        $('#mAction').textbox('enable');
+                    } else {
+                        $('#iMenu').combobox('select', "");
+                        $('#iMenu').combobox("disable");
+                        $('#mName').textbox("disable");
+                        $('#mType').textbox("disable");
+                        $('#mAction').textbox("disable");
+                        $('#mController').textbox('disable');
+                        $('#mOrder').textbox("disable");
+                        $('#mNote').textbox("disable");
+                    }
+
+                    $('#dlg').dialog('open').dialog('setTitle', '编辑模块');
+                    $('#fm').form('load', node);
+                    url = '/Menu/EditMenu/?ID=' + node.ID + "&parentId=" + node._parentId;
+                }
+            }
+            function saveMenu() {
+                $('#fm').form('submit', {
+                    url: url,
+                    onSubmit: function () {
+                        return $(this).form('validate');
+                    },
+                    success: function (result) {
+                        var result = eval('(' + result + ')');
+                        if (result.errorMsg) {
+                            $.messager.show({
+                                title: 'Error',
+                                msg: result.errorMsg
+                            });
+                        } else {
+                            $('#dlg').dialog('close');		// close the dialog
+                            $('#tg').treegrid('reload');	// reload the user data
+                            $.messager.show({
+                                title: '创建成功',
+                                msg: result.okMsg
+                            });
+                        }
+                    }
+                });
+            }
+            function destroyMenu() {
+                var node = $('#tg').treegrid('getSelected');
+                if (node) {
+                    $.messager.confirm('Confirm', '组确定要删除这个模块项吗?', function (r) {
+                        if (r) {
+                            $.post('/Menu/DelMenu/ ' + node.ID, { id: node.ID, pid: node._parentId }, function (result) {
+                                if (result.okMsg) {
+                                    $('#tg').treegrid('reload');
+                                    $.messager.show({	// show error message
+                                        title: '删除成功',
+                                        msg: result.okMsg
+                                    });
+                                    // reload the user data
+                                } else {
+                                    $.messager.show({	// show error message
+                                        title: '删除失败',
+                                        msg: result.errorMsg
+                                    });
+                                }
+
+                            }, 'json');
+                        }
+                    });
+                }
+            }
+            $('#tg').treegrid({
+                onClickRow: function (node) {
+                    $('#badd').linkbutton("enable");
+                    $('#bedit').linkbutton("enable");
+                    if ($('#tg').treegrid('isLeaf', node.ID)) {
+                        $('#bdel').linkbutton("enable");
+                    } else { $('#bdel').linkbutton("disable"); }
+                }
+            });
+
+        </script>
+        <style type="text/css">
+            #fm {
+                margin: 0;
+                padding: 10px 30px;
+            }
+
+            .ftitle {
+                font-size: 14px;
+                font-weight: bold;
+                padding: 5px 0;
+                margin-bottom: 10px;
+                border-bottom: 1px solid #ccc;
+            }
+
+            .fitem {
+                margin-bottom: 5px;
+            }
+
+                .fitem label {
+                    display: inline-block;
+                    width: 80px;
+                }
+
+                .fitem input {
+                    width: 160px;
+                }
+        </style>
+
+    </div>
+
+</body>
+</html>

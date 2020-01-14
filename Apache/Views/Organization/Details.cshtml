@@ -1,0 +1,66 @@
+﻿@model Apache.Models.Organization
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Details</title>
+</head>
+<body>
+    <div>
+        <h4>Organization</h4>
+    	<hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.orgName)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.orgName)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.orgCode)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.orgCode)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.orgType)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.orgType)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.orgNote)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.orgNote)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.parentId)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.parentId)
+            </dd>
+    
+        </dl>
+    </div>
+    <p>
+        @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+</body>
+</html>

@@ -1,0 +1,187 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日志管理</title>
+
+    @Styles.Render("~/Content/easyui")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/easyui")
+    @Scripts.Render("~/bundles/easyuivalidate")
+    <script language="javascript">
+        $(function () {
+            var isitype = $('#isitype').combobox({                         //一级
+                url: '/ItService/getIsitype',
+                editable: false,
+                valueField: 'id',
+                textField: 'name',
+                onSelect: function (record) {
+
+                    sub_isitype.combobox({
+                        editable: false,
+                        url: '/ItService/getSub_isitype?id=' + record.id,
+                        valueField: 'id',
+                        textField: 'name'
+                    }).combobox('clear');
+
+                    end_isiype.combobox({       //清除终极类别
+                        url: '/ItService/getEnd_isitype?id=-1',
+                        editable: false
+                    }).combobox('clear');
+
+                }
+            });
+
+            var sub_isitype = $('#sub_isitype').combobox({               //二级
+                url: '/ItService/getSub_isitype?id=' + isitype.val(),
+                editable: false,
+                valueField: 'id',
+                textField: 'name',
+                onSelect: function (record) {
+                    end_isiype.combobox({
+                        editable: false,
+                        url: '/ItService/getEnd_isitype?id=' + record.id,
+                        valueField: 'id',
+                        textField: 'name'
+                    }).combobox('clear');
+                }
+            });
+
+            var end_isiype = $('#end_isitype').combobox({               //三级
+                url: '/ItService/getEnd_isitype?id=' + sub_isitype.val(),
+                editable: false,
+                valueField: 'id',
+                textField: 'name'
+            });
+
+        });
+    </script>
+
+</head>
+
+<body class="easyui-layout" style="padding:5px;">
+
+    <div data-options="region:'center',title:'统计分析', fit:'true'" style="padding:5px;background:#eee;">
+        <div class="easyui-layout" fit="true">
+            <div data-options="region:'north',title:'搜索',split:true,iconCls:'icon-search'" style="height:170px;">
+                <div id="p" class="easyui-panel" style="padding:10px;" border="0">
+                    <div class="fitem">
+                        <label>处理人:</label><input id="DealwithpeopleName" name="DealwithpeopleName" class="easyui-textbox"><br />
+                    </div>
+                    <div class="fitem">
+                        <label>时  间:</label>起&nbsp;<input id="tn" name="logTime" class="easyui-textbox easyui-datebox">&nbsp;止&nbsp;<input id="tne" name="logTime" class="easyui-textbox easyui-datebox">
+                    </div>
+
+                    <div class="fitem">
+                        大类：<input class="easyui-combobox" id="isitype" name="isitype" style="width:166px" data-options="valueField:'id', textField:'name', panelHeight:'auto'">
+                        &nbsp;&nbsp;小类：<input class=" easyui-combobox" id="sub_isitype" name="sub_isitype" style="width:166px" data-options="valueField:'id', textField:'name', panelHeight:'auto'">
+                        &nbsp;&nbsp;详细类别：<input class=" easyui-combobox" id="end_isitype" name="end_isitype" style="width:166px" data-options="valueField:'id', textField:'name', panelHeight:'auto'">
+                    </div>
+                    <div class="fitem">
+                        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-search'" style="width:80px" onclick="searchisi()">搜索</a> <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-search'" style="width:80px" onclick="isiexportxls()">导出xls</a>
+                    </div>
+                </div>
+            </div>
+            <div data-options="region:'center'" style="padding:0px;background:#eee;" border="0">
+                <table id="dg" title="统计分析" class="easyui-datagrid" fitcolumns="true" url="/ItService/ItServiceList" pagination="true" toolbar="#toolbar" rownumbers="true" fitcolumns="true" singleselect="true" fit="true" method="post">
+                    <thead>
+                        <tr>
+                            <th field="Title" width="100">标题</th>
+                            <th field="isiAllType" width="80">类别</th>
+                            <th field="applicant" width="30">申请人</th>
+                            <th field="isiCreateDate" width="50">申请时间</th>
+                            <th field="DealwithpeopleName" width="30">处理人</th>
+                            <th field="solution" width="180">处理方法</th>
+                        </tr>
+                    </thead>
+                </table>
+                <div id="toolbar">
+                    <a href="javascript:void(0)" class="easyui-linkbutton" iconcls="icon-reload" plain="true" onclick="reload()">刷新</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        function searchisi() {
+
+            $('#dg').datagrid({
+                url: "/ItService/ItServiceList?DealwithpeopleName=" + $("#DealwithpeopleName").val() + "&logTimeB=" + $("#tn").datebox("getValue") + "&logTimeE=" + $("#tne").datebox("getValue") + "&isitype=" + $("#isitype").combobox('getValue') + "&sub_isitype=" + $("#sub_isitype").combobox('getValue') + "&end_isitype=" + $("#end_isitype").combobox('getValue')
+            });
+            $('#dg').datagrid('reload');	// reload the user data
+        }
+        function isiexportxls() {
+            window.open("/ItService/IsiExportXls?DealwithpeopleName=" + $("#DealwithpeopleName").val() + "&logTimeB=" + $("#tn").datebox("getValue") + "&logTimeE=" + $("#tne").datebox("getValue") + "&isitype=" + $("#isitype").combobox('getValue') + "&sub_isitype=" + $("#sub_isitype").combobox('getValue') + "&end_isitype=" + $("#end_isitype").combobox('getValue') + "&time=" + new Date())
+     
+        }
+
+        function reload() {
+            $('#dg').datagrid('reload');
+        }
+        $(function () {
+            var p = $('#dg').datagrid('getPager');
+
+            $(p).pagination({
+
+                pageSize: 10,//每页显示的记录条数，默认为10
+
+                pageList: [10, 20, 30],//可以设置每页记录条数的列表
+
+                beforePageText: '第',//页数文本框前显示的汉字
+
+                afterPageText: '页    共 {pages} 页',
+
+                displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录',
+
+                /*onBeforeRefresh:function(){
+
+                    $(this).pagination('loading');
+
+                    alert('before refresh');
+
+                    $(this).pagination('loaded');
+
+                }*/
+
+            });
+        });
+
+
+    </script>
+
+    <style type="text/css">
+        #fm {
+            margin: 0;
+            padding: 10px 30px;
+        }
+
+        .ftitle {
+            font-size: 14px;
+            font-weight: bold;
+            padding: 5px 0;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .fitem {
+            margin-bottom: 5px;
+        }
+
+            .fitem label {
+                display: inline-block;
+                width: 100px;
+            }
+
+            .fitem input {
+                width: 160px;
+            }
+    </style>
+</body>
+
+</html>

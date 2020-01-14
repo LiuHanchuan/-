@@ -1,0 +1,171 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - 数据字典管理</title>
+    @Styles.Render("~/Content/easyui")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/easyui")
+
+</head>
+
+<body>
+    <div id="p" class="easyui-panel" title="数据字典管理"
+         style="padding:10px;background:#fafafa;"
+         data-options="iconCls:'icon-save',closable:true,
+                collapsible:true,minimizable:true,maximizable:true">
+
+        <table id="tg" title="数据字典管理" class="easyui-treegrid" style="width:700px;height:500px" data-options="url: '/DataDict/DataDictlist',method: 'post',lines: true,rownumbers: true,idField: 'ID',treeField: 'DataDictName',toolbar:'#toolbar',fitColumns:'true',fit:'true'">
+            <thead>
+                <tr>
+                    <th data-options="field:'DataDictName'" width="220">名称</th>
+                    <th data-options="field:'DataDictCode'" width="100">代码</th>
+                    <th data-options="field:'DataDictType'" width="150">类型</th>
+                    <th data-options="field:'DataDictNote'" width="150">备注</th>
+                </tr>
+            </thead>
+        </table>
+        <div id="toolbar">
+            <a href="javascript:void(0)" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="newDataDict()" disabled="true" id="badd">新增</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="editDataDict()" disabled="true" id="bedit">编辑</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="destroyDataDict()" disabled="true" id="bdel">删除</a>
+        </div>
+        <div id="dlg" class="easyui-dialog" style="width:400px;height:280px;padding:10px 20px"
+             closed="true" buttons="#dlg-buttons" modal="true">
+            <div class="ftitle">数据字典信息</div>
+            <form id="fm" method="post" novalidate>
+                <div class="fitem">
+                    <label>名称:</label>
+                    <input name="DataDictName" class="easyui-textbox" required="true">
+                </div>
+                <div class="fitem">
+                    <label>代码:</label>
+                    <input name="DataDictCode" class="easyui-textbox">
+                </div>
+                <div class="fitem">
+                    <label>类型:</label>
+                    <input name="DataDictType" class="easyui-textbox">
+                </div>
+                <div class="fitem">
+                    <label>备注:</label>
+                    <input name="DataDictNote" class="easyui-textbox">
+                </div>
+            </form>
+        </div>
+        <div id="dlg-buttons">
+            <a href="javascript:void(0)" class="easyui-linkbutton c6" iconcls="icon-ok" onclick="saveDataDict()" style="width:90px">Save</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" iconcls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')" style="width:90px">Cancel</a>
+        </div>
+        <script type="text/javascript">
+            var url;
+            function newDataDict() {
+                var node = $('#tg').treegrid('getSelected');
+                $('#dlg').dialog('open').dialog('setTitle', '添加数据字典');
+                $('#fm').form('clear');
+                url = '/DataDict/CreateDataDict/' + node.ID;
+            }
+            function editDataDict() {
+                var node = $('#tg').treegrid('getSelected');
+                if (node) {
+                    $('#dlg').dialog('open').dialog('setTitle', '编辑数据字典');
+                    $('#fm').form('load', node);
+                    url = '/DataDict/EditDataDict/?ID=' + node.ID + "&parentId=" + node._parentId;
+                }
+            }
+            function saveDataDict() {
+                $('#fm').form('submit', {
+                    url: url,
+                    onSubmit: function () {
+                        return $(this).form('validate');
+                    },
+                    success: function (result) {
+                        var result = eval('(' + result + ')');
+                        if (result.errorMsg) {
+                            $.messager.show({
+                                title: 'Error',
+                                msg: result.errorMsg
+                            });
+                        } else {
+                            $('#dlg').dialog('close');		// close the dialog
+                            $('#tg').treegrid('reload');	// reload the user data
+                            $.messager.show({
+                                title: '创建成功',
+                                msg: result.okMsg
+                            });
+                        }
+                    }
+                });
+            }
+            function destroyDataDict() {
+                var node = $('#tg').treegrid('getSelected');
+                if (node) {
+                    $.messager.confirm('Confirm', '确定要删除这个数据字典吗?', function (r) {
+                        if (r) {
+                            $.post('/DataDict/DelDataDict/ ' + node.ID, { id: node.ID, pid: node._parentId }, function (result) {
+                                if (result.okMsg) {
+                                    $('#tg').treegrid('reload');
+                                    $.messager.show({	// show error message
+                                        title: '删除成功',
+                                        msg: result.okMsg
+                                    });
+                                    // reload the user data
+                                } else {
+                                    $.messager.show({	// show error message
+                                        title: '删除失败',
+                                        msg: result.errorMsg
+                                    });
+                                }
+
+                            }, 'json');
+                        }
+                    });
+                }
+            }
+            $('#tg').treegrid({
+                onClickRow: function (node) {
+                    $('#badd').linkbutton("enable");
+                    $('#bedit').linkbutton("enable");
+                    if ($('#tg').treegrid('isLeaf', node.ID)) {
+                        $('#bdel').linkbutton("enable");
+                    } else { $('#bdel').linkbutton("disable"); }
+                }
+            });
+        </script>
+        <style type="text/css">
+            #fm {
+                margin: 0;
+                padding: 10px 30px;
+            }
+
+            .ftitle {
+                font-size: 14px;
+                font-weight: bold;
+                padding: 5px 0;
+                margin-bottom: 10px;
+                border-bottom: 1px solid #ccc;
+            }
+
+            .fitem {
+                margin-bottom: 5px;
+            }
+
+                .fitem label {
+                    display: inline-block;
+                    width: 80px;
+                }
+
+                .fitem input {
+                    width: 160px;
+                }
+        </style>
+
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,72 @@
+﻿@model Apache.Models.Organization
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Delete</title>
+</head>
+<body>
+    <h3>Are you sure you want to delete this?</h3>
+    <div>
+        <h4>Organization</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.orgName)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.orgName)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.orgCode)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.orgCode)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.orgType)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.orgType)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.orgNote)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.orgNote)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.parentId)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.parentId)
+            </dd>
+    
+        </dl>
+    
+        @using (Html.BeginForm()) {
+            @Html.AntiForgeryToken()
+    
+            <div class="form-actions no-color">
+                <input type="submit" value="Delete" class="btn btn-default" /> |
+                @Html.ActionLink("Back to List", "Index")
+            </div>
+        }
+    </div>
+</body>
+</html>

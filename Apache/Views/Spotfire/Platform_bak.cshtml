@@ -1,0 +1,128 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewBag.Title - 科研检索平台</title>
+    @Styles.Render("~/Content/easyui")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/easyui")
+
+    <style type="text/css">
+        .fitem {
+            margin-top: 0px;
+            margin-bottom: 0px;
+            text-align: left;
+            padding-left: 40px;
+        }
+
+            .fitem label {
+                display: inline-block;
+                width: 80px;
+            }
+
+            .fitem input {
+                width: 80px;
+            }
+
+        .black {
+            display: none;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            background: rgba(0,0,0,0.1);
+            top: 0;
+            left: 0;
+        }
+
+        .dialog {
+            display: none;
+            position: fixed;
+            z-index: 3;
+            width: 500px;
+            height: 250px;
+            top: 50%;
+            left: 50%;
+            margin: -150px 0 0 -250px;
+            background: #fff;
+            padding: 15px;
+            border-radius: 5px;
+        }
+
+        .OK-button {
+            font-size: 0.9em;
+            color: #fff;
+            background: deepskyblue;
+            outline: none;
+            border: none;
+            cursor: pointer;
+            padding: 10px 20px;
+            -webkit-appearance: none;
+        }
+
+        .Lib-button {
+            color: #fff;
+            background: deepskyblue;
+            outline: none;
+            border: none;
+            cursor: pointer;
+            padding: 90px 160px;
+            -webkit-appearance: none;
+            font-size: 30px;
+        }
+
+        img {
+            margin: 20px 50px; /*调整图片元素间隔*/
+        }
+    </style>
+</head>
+<script language="javascript"></script>
+
+<body>
+    <div id="p" class="easyui-panel" title="科研检索平台"
+         style="padding:10px;background:#fafafa;"
+         data-options="iconCls:'icon_it_write',collapsible:true,toolbar:'#toolbar'">
+        <div id="libmenu" class="fitem">
+            <img style="cursor:zoom-in" src="~/images/menus/icon-mz.png" width="150 px;" height="170 px;" onclick=" OpenDXP('MZ')" />
+            <img style="cursor:zoom-in" src="~/images/menus/icon-zy.png" width="150 px;" height="170 px;" onclick=" OpenDXP('ZY')" />
+        </div>
+
+        <script>
+            function OpenDXP(type) {
+                var url = "";
+                if (sessionStorage.getItem('firstflag') == '1') {
+                    url = "http://172.30.100.145:90/spotfire/resources/custom-login/custom-login-app-example.html?sessionid=&libraryname=";
+                    if (type == 'MZ') {
+                        url = url + 'c715cc7c-d6c9-4a25-afa8-d43259fec224';
+                    }
+                    if (type == 'ZY') {
+                        url = url + 'c715cc7c-d6c9-4a25-afa8-d43259fec224';
+                    }
+                    $.getJSON("/Spotfire/getUser", function (result) {
+                        //alert(result.User + result.PassWord);
+                        url += "&username=" + result.User + "&password=" + result.PassWord;
+                        window.open(url);
+                        sessionStorage.setItem('firstflag', '2');
+                    });
+                }
+                else {
+                    if (type == 'MZ') {
+                        url = "https://www.baidu.com";
+                    }
+                    if (type == 'ZY') {
+                        url = "https://www.baidu.com";
+                    }
+                    window.open(url);
+                }
+            }
+        </script>
+    </div>
+</body>
+</html>
