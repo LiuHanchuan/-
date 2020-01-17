@@ -6,7 +6,7 @@
 
 ### 软件架构
 
-        权限管理系统，系统主要使用的技术及相关资源：MVC5、EF6、CodeFirst、WorkFlow4.5、EasyUI（IE9以上）等。包含说明文档
+        权限管理系统，系统主要使用的技术及相关资源：MVC5、EF6、CodeFirst、WorkFlow4.5、EasyUI（IE9以上）、ADO.NET等。包含说明文档
 
 
 ### 功能模块
